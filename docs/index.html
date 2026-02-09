@@ -2503,7 +2503,7 @@
                 <div id="view-evaluations" class="view">
                     <div class="flex items-center justify-between mb-6">
                         <h1 class="text-xl font-semibold text-white">Evaluation Runs</h1>
-                        <button class="btn btn-primary">+ New Run</button>
+                        <button class="btn btn-ghost" style="color: var(--text-primary);">+ New Run</button>
                     </div>
 
                     <div class="card-grid">
@@ -3156,7 +3156,7 @@
                 <div id="view-pipelines" class="view">
                     <div class="flex items-center justify-between mb-6">
                         <h1 class="text-xl font-semibold text-white">Ingestion Pipelines</h1>
-                        <button class="btn btn-primary">+ New Pipeline</button>
+                        <button class="btn btn-ghost" style="color: var(--text-primary);">+ New Pipeline</button>
                     </div>
 
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 32px;">
@@ -3407,6 +3407,11 @@
                 <!-- View: Agent Evaluations (extracted from agent detail) -->
                 <div id="view-agent-evaluations" class="view">
                     <div id="agent-evaluations-root"></div>
+                </div>
+
+                <!-- View: Evaluation Run Detail -->
+                <div id="view-eval-run-detail" class="view">
+                    <div id="eval-run-detail-root"></div>
                 </div>
 
                 <!-- View: Agent Detail — Product Advisor Agent (Preact) -->
@@ -6309,7 +6314,7 @@
             var allRuns = props.runs || [];
             var q = (query || '').toLowerCase().trim();
             var filtered = !q ? allRuns : allRuns.filter(function(r) {
-                return [r.runName, r.suite, r.dataset, (r.models || []).map(function(m){ return m && m.name; }).join(' '), (r.tools || []).map(function(t){ return t && t.name; }).join(' '), (r.databases || []).map(function(d){ return d && d.name; }).join(' ')].filter(Boolean).join(' ').toLowerCase().indexOf(q) !== -1;
+                return [r.runName, r.suite, r.dataset, (r.models || []).map(function(m){ return m && m.name; }).join(' '), (r.models || []).map(function(m){ return m && m.provider; }).join(' '), (r.tools || []).map(function(t){ return t && t.name; }).join(' '), (r.databases || []).map(function(d){ return d && d.name; }).join(' '), (r.scorers || []).map(function(s){ return s && s.name; }).join(' ')].filter(Boolean).join(' ').toLowerCase().indexOf(q) !== -1;
             });
             var sorted = filtered.slice().sort(function(a, b) { return ((b && b.ts) ? Number(b.ts) : 0) - ((a && a.ts) ? Number(a.ts) : 0); });
             var totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
@@ -6318,6 +6323,97 @@
             var start = (safePage - 1) * pageSize;
             var pageRows = sorted.slice(start, start + pageSize);
             var footerText = sorted.length ? ('Showing ' + (start + 1) + '-' + Math.min(start + pageSize, sorted.length) + ' of ' + sorted.length) : 'No evaluation runs';
+
+            // ---- New Evaluation modal state ----
+            var _showModal = useState(false); var showNewEvalModal = _showModal[0]; var setShowNewEvalModal = _showModal[1];
+            var _evalStep = useState(0); var evalStep = _evalStep[0]; var setEvalStep = _evalStep[1];
+
+            // Form fields
+            var _evalDataset = useState(''); var evalDataset = _evalDataset[0]; var setEvalDataset = _evalDataset[1];
+            var _evalModel = useState(''); var evalModel = _evalModel[0]; var setEvalModel = _evalModel[1];
+            var _evalScorers = useState({ correctness: true, relevance: true, safety: false, groundedness: false, guidelines: false }); var evalScorers = _evalScorers[0]; var setEvalScorers = _evalScorers[1];
+            var _evalGuideline = useState(''); var evalGuideline = _evalGuideline[0]; var setEvalGuideline = _evalGuideline[1];
+            var _evalRunName = useState(''); var evalRunName = _evalRunName[0]; var setEvalRunName = _evalRunName[1];
+            var _evalSuite = useState(''); var evalSuite = _evalSuite[0]; var setEvalSuite = _evalSuite[1];
+            var _evalTemp = useState(''); var evalTemp = _evalTemp[0]; var setEvalTemp = _evalTemp[1];
+            var _evalMaxTokens = useState(''); var evalMaxTokens = _evalMaxTokens[0]; var setEvalMaxTokens = _evalMaxTokens[1];
+            var _evalAdvanced = useState(false); var showAdvanced = _evalAdvanced[0]; var setShowAdvanced = _evalAdvanced[1];
+
+            var availableDatasets = [
+                { id: 'golden-answers-v5', name: 'golden-answers-v5', count: 214, description: 'Curated Q&A pairs from real support tickets with verified answers' },
+                { id: 'zendesk-flows-v2', name: 'zendesk-flows-v2', count: 87, description: 'Multi-turn tool-calling flows extracted from Zendesk ticket resolution' },
+                { id: 'support-kb-qa-v1', name: 'support-kb-qa-v1', count: 156, description: 'Knowledge base QA with grounding citations and source docs' },
+                { id: 'safety-probes-v2', name: 'safety-probes-v2', count: 340, description: 'Adversarial jailbreak and prompt injection test cases' },
+                { id: 'refund-policy-v1', name: 'refund-policy-v1', count: 62, description: 'Edge-case policy questions covering refund, warranty, and compliance' }
+            ];
+            var availableModels = [
+                { id: 'gpt-4-turbo', name: 'gpt-4-turbo', provider: 'OpenAI', domain: 'openai.com' },
+                { id: 'gpt-4o-mini', name: 'gpt-4o-mini', provider: 'OpenAI', domain: 'openai.com' },
+                { id: 'gpt-4.1', name: 'gpt-4.1', provider: 'OpenAI', domain: 'openai.com' },
+                { id: 'llama-3.1-70b', name: 'Llama 3.1 70B', provider: 'vLLM (self-hosted)', domain: 'docs.vllm.ai' },
+                { id: 'mistral-small-24b', name: 'Mistral Small 24B', provider: 'Ollama (self-hosted)', domain: 'mistral.ai' },
+                { id: 'claude-3.5-sonnet', name: 'Claude 3.5 Sonnet', provider: 'Anthropic', domain: 'anthropic.com' }
+            ];
+            var availableSuites = ['Regression', 'ToolCallCorrectness', 'RAGGrounding', 'Jailbreak', 'PolicyEdgeCases', 'Custom'];
+            var scorerDefs = [
+                { key: 'correctness', name: 'Correctness', description: 'LLM judge checks if output matches expected answer', builtIn: true },
+                { key: 'relevance', name: 'Relevance', description: 'Measures response relevance to the input query', builtIn: true },
+                { key: 'safety', name: 'Safety', description: 'Detects harmful, biased, or policy-violating content', builtIn: true },
+                { key: 'groundedness', name: 'Groundedness', description: 'Verifies claims are supported by retrieved context', builtIn: true },
+                { key: 'guidelines', name: 'Guidelines', description: 'Custom criteria evaluated by LLM judge', builtIn: true }
+            ];
+
+            function toggleScorer(key) {
+                var next = {};
+                for (var k in evalScorers) next[k] = evalScorers[k];
+                next[key] = !evalScorers[key];
+                setEvalScorers(next);
+            }
+
+            function resetNewEvalForm() {
+                setEvalDataset('');
+                setEvalModel('');
+                setEvalScorers({ correctness: true, relevance: true, safety: false, groundedness: false, guidelines: false });
+                setEvalGuideline('');
+                setEvalRunName('');
+                setEvalSuite('');
+                setEvalTemp('');
+                setEvalMaxTokens('');
+                setShowAdvanced(false);
+                setEvalStep(0);
+            }
+
+            function openNewEval() { resetNewEvalForm(); setShowNewEvalModal(true); }
+            function closeNewEval() { setShowNewEvalModal(false); }
+
+            var selectedScorersCount = Object.keys(evalScorers).filter(function(k){ return evalScorers[k]; }).length;
+            var canProceedStep0 = evalDataset && evalModel;
+            var canProceedStep1 = selectedScorersCount > 0 && (!evalScorers.guidelines || (evalScorers.guidelines && evalGuideline.trim()));
+            var selectedDatasetObj = availableDatasets.find(function(d){ return d.id === evalDataset; });
+            var selectedModelObj = availableModels.find(function(m){ return m.id === evalModel; });
+
+            // Auto-generate run name
+            useEffect(function() {
+                if (evalDataset && evalModel && evalSuite) {
+                    var today = new Date();
+                    var dateStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+                    var modelSlug = evalModel.replace(/[\s.]/g, '_').toLowerCase();
+                    var suiteSlug = evalSuite.replace(/[\s]/g, '_').toLowerCase();
+                    setEvalRunName('predeploy_' + suiteSlug + '__' + evalDataset + '__' + modelSlug + '__' + dateStr);
+                }
+            }, [evalDataset, evalModel, evalSuite]);
+
+            // Modal styles
+            var modalOverlayStyle = 'position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px);';
+            var modalPanelStyle = 'width: 640px; max-height: 85vh; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.5); display: flex; flex-direction: column; overflow: hidden;';
+            var modalHeaderStyle = 'padding: 20px 24px 16px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;';
+            var modalBodyStyle = 'padding: 20px 24px; overflow-y: auto; flex: 1;';
+            var modalFooterStyle = 'padding: 16px 24px; border-top: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;';
+            var fieldLabelStyle = 'font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px;';
+            var selectStyle = 'width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); background: var(--bg-page); color: var(--text-primary); font-size: 13px; font-family: inherit; outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;';
+            var inputStyle = 'width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); background: var(--bg-page); color: var(--text-primary); font-size: 13px; font-family: inherit; outline: none;';
+            var btnPrimary = 'padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: var(--color-primary); color: #fff; transition: all 0.15s ease;';
+            var btnSecondary = 'padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border-subtle); background: transparent; color: var(--text-secondary); transition: all 0.15s ease;';
 
             return html`
                 <div style="display: flex; flex-direction: column; gap: 24px;">
@@ -6328,45 +6424,355 @@
                     ` : null}
                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
                         <h2 style="font-size: 14px; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin: 0;">Evaluations</h2>
-                        <div class="search-box" style="width: 260px;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
-                            <input type="text" placeholder="Search evaluation runs..." value=${query} onInput=${function(e){ setQuery(e.target.value); setPage(1); }} />
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="search-box" style="width: 260px;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+                                <input type="text" placeholder="Search evaluation runs..." value=${query} onInput=${function(e){ setQuery(e.target.value); setPage(1); }} />
+                            </div>
+                            <button class="btn btn-ghost" style="white-space: nowrap; color: var(--text-primary);" onClick=${openNewEval}>+ New Evaluation</button>
                         </div>
                     </div>
+
+                    <!-- ===== New Evaluation Modal ===== -->
+                    ${showNewEvalModal ? html`
+                        <div style=${modalOverlayStyle} onClick=${function(e){ if (e.target === e.currentTarget) closeNewEval(); }}>
+                            <div style=${modalPanelStyle}>
+                                <!-- Header -->
+                                <div style=${modalHeaderStyle}>
+                                    <div>
+                                        <h2 style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin: 0;">New Evaluation</h2>
+                                        <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">${evalStep === 0 ? 'Configure dataset and model' : evalStep === 1 ? 'Select scorers and criteria' : 'Review and run'}</p>
+                                    </div>
+                                    <button onClick=${closeNewEval} style="width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border-subtle); background: transparent; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.15s ease;" onmouseenter=${function(e){ e.currentTarget.style.background='rgba(255,255,255,0.06)'; }} onmouseleave=${function(e){ e.currentTarget.style.background='transparent'; }}>×</button>
+                                </div>
+
+                                <!-- Step indicator -->
+                                <div style="padding: 12px 24px 0; display: flex; gap: 8px;">
+                                    ${[['Dataset & Model', 0], ['Scorers', 1], ['Review', 2]].map(function(s) {
+                                        var active = evalStep === s[1];
+                                        var done = evalStep > s[1];
+                                        return html`
+                                            <div style=${'flex: 1; display: flex; flex-direction: column; gap: 4px; cursor: ' + (done ? 'pointer' : 'default') + ';'} onClick=${function(){ if (done) setEvalStep(s[1]); }}>
+                                                <div style=${'height: 3px; border-radius: 2px; transition: all 0.2s ease; ' + (active ? 'background: var(--color-primary);' : done ? 'background: rgba(34,114,180,0.4);' : 'background: rgba(255,255,255,0.08);')}></div>
+                                                <span style=${'font-size: 10px; font-weight: 600; letter-spacing: 0.03em; ' + (active ? 'color: var(--color-primary);' : done ? 'color: var(--text-secondary);' : 'color: var(--text-muted);')}>${s[0]}</span>
+                                            </div>
+                                        `;
+                                    })}
+                                </div>
+
+                                <!-- Body -->
+                                <div style=${modalBodyStyle}>
+
+                                    <!-- STEP 0: Dataset & Model -->
+                                    ${evalStep === 0 ? html`
+                                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                                            <!-- Evaluation Suite -->
+                                            <div>
+                                                <div style=${fieldLabelStyle}>Evaluation Suite</div>
+                                                <div style="position: relative;">
+                                                    <select style=${selectStyle} value=${evalSuite} onChange=${function(e){ setEvalSuite(e.target.value); }}>
+                                                        <option value="" disabled selected>Select a suite...</option>
+                                                        ${availableSuites.map(function(s){ return html`<option value=${s}>${s}</option>`; })}
+                                                    </select>
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; pointer-events: none; color: var(--text-muted);"><path d="m6 9 6 6 6-6"></path></svg>
+                                                </div>
+                                            </div>
+
+                                            <!-- Dataset -->
+                                            <div>
+                                                <div style=${fieldLabelStyle}>Dataset</div>
+                                                <div style="display: flex; flex-direction: column; gap: 6px;">
+                                                    ${availableDatasets.map(function(ds) {
+                                                        var selected = evalDataset === ds.id;
+                                                        return html`
+                                                            <div
+                                                                onClick=${function(){ setEvalDataset(ds.id); }}
+                                                                style=${'padding: 10px 14px; border-radius: 10px; border: 1px solid ' + (selected ? 'var(--color-primary)' : 'var(--border-subtle)') + '; background: ' + (selected ? 'rgba(34,114,180,0.08)' : 'var(--bg-page)') + '; cursor: pointer; transition: all 0.15s ease;'}
+                                                                onmouseenter=${function(e){ if (!selected) e.currentTarget.style.borderColor='rgba(232,236,240,0.20)'; }}
+                                                                onmouseleave=${function(e){ if (!selected) e.currentTarget.style.borderColor='var(--border-subtle)'; }}
+                                                            >
+                                                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                                        <div style=${'width: 16px; height: 16px; border-radius: 50%; border: 2px solid ' + (selected ? 'var(--color-primary)' : 'rgba(255,255,255,0.15)') + '; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s ease;'}>
+                                                                            ${selected ? html`<div style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary);"></div>` : null}
+                                                                        </div>
+                                                                        <span style="font-size: 13px; font-weight: 600; color: var(--text-primary); font-family: var(--font-mono, monospace);">${ds.name}</span>
+                                                                    </div>
+                                                                    <span style="font-size: 11px; color: var(--text-muted);">${ds.count} examples</span>
+                                                                </div>
+                                                                <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px; margin-left: 24px; line-height: 1.4;">${ds.description}</div>
+                                                            </div>
+                                                        `;
+                                                    })}
+                                                </div>
+                                            </div>
+
+                                            <!-- Model -->
+                                            <div>
+                                                <div style=${fieldLabelStyle}>Model (Predict Function Target)</div>
+                                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                                                    ${availableModels.map(function(m) {
+                                                        var selected = evalModel === m.id;
+                                                        return html`
+                                                            <div
+                                                                onClick=${function(){ setEvalModel(m.id); }}
+                                                                style=${'padding: 10px 12px; border-radius: 10px; border: 1px solid ' + (selected ? 'var(--color-primary)' : 'var(--border-subtle)') + '; background: ' + (selected ? 'rgba(34,114,180,0.08)' : 'var(--bg-page)') + '; cursor: pointer; transition: all 0.15s ease; display: flex; align-items: center; gap: 8px;'}
+                                                                onmouseenter=${function(e){ if (!selected) e.currentTarget.style.borderColor='rgba(232,236,240,0.20)'; }}
+                                                                onmouseleave=${function(e){ if (!selected) e.currentTarget.style.borderColor='var(--border-subtle)'; }}
+                                                            >
+                                                                <img src=${'https://www.google.com/s2/favicons?sz=32&domain=' + m.domain} alt="" style="width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0;" />
+                                                                <div style="min-width: 0;">
+                                                                    <div style="font-size: 12px; font-weight: 600; color: var(--text-primary);">${m.name}</div>
+                                                                    <div style="font-size: 10px; color: var(--text-muted);">${m.provider}</div>
+                                                                </div>
+                                                            </div>
+                                                        `;
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ` : null}
+
+                                    <!-- STEP 1: Scorers -->
+                                    ${evalStep === 1 ? html`
+                                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                                            <div>
+                                                <div style=${fieldLabelStyle}>Scorers</div>
+                                                <p style="font-size: 11px; color: var(--text-muted); margin: 0 0 10px 0; line-height: 1.4;">Scorers define the evaluation criteria. Built-in scorers use LLM-as-a-Judge to assess quality automatically.</p>
+                                                <div style="display: flex; flex-direction: column; gap: 6px;">
+                                                    ${scorerDefs.map(function(sc) {
+                                                        var checked = !!evalScorers[sc.key];
+                                                        return html`
+                                                            <div
+                                                                onClick=${function(){ toggleScorer(sc.key); }}
+                                                                style=${'padding: 10px 14px; border-radius: 10px; border: 1px solid ' + (checked ? 'var(--color-primary)' : 'var(--border-subtle)') + '; background: ' + (checked ? 'rgba(34,114,180,0.08)' : 'var(--bg-page)') + '; cursor: pointer; transition: all 0.15s ease;'}
+                                                                onmouseenter=${function(e){ if (!checked) e.currentTarget.style.borderColor='rgba(232,236,240,0.20)'; }}
+                                                                onmouseleave=${function(e){ if (!checked) e.currentTarget.style.borderColor='var(--border-subtle)'; }}
+                                                            >
+                                                                <div style="display: flex; align-items: center; gap: 10px;">
+                                                                    <div style=${'width: 18px; height: 18px; border-radius: 4px; border: 2px solid ' + (checked ? 'var(--color-primary)' : 'rgba(255,255,255,0.15)') + '; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s ease; ' + (checked ? 'background: var(--color-primary);' : '')}>
+                                                                        ${checked ? html`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><path d="M20 6 9 17l-5-5"></path></svg>` : null}
+                                                                    </div>
+                                                                    <div style="flex: 1;">
+                                                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                                                            <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">${sc.name}</span>
+                                                                            ${sc.builtIn ? html`<span style="font-size: 9px; padding: 1px 6px; border-radius: 999px; background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); font-weight: 600;">Built-in</span>` : null}
+                                                                        </div>
+                                                                        <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${sc.description}</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        `;
+                                                    })}
+                                                </div>
+                                            </div>
+
+                                            <!-- Guidelines text area (shown when Guidelines scorer is selected) -->
+                                            ${evalScorers.guidelines ? html`
+                                                <div>
+                                                    <div style=${fieldLabelStyle}>Custom Guideline</div>
+                                                    <textarea
+                                                        rows="3"
+                                                        placeholder="e.g. The answer must be in English and should not include internal jargon..."
+                                                        value=${evalGuideline}
+                                                        onInput=${function(e){ setEvalGuideline(e.target.value); }}
+                                                        style=${'width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); background: var(--bg-page); color: var(--text-primary); font-size: 13px; font-family: inherit; outline: none; resize: vertical; min-height: 60px;'}
+                                                    ></textarea>
+                                                    <p style="font-size: 10px; color: var(--text-muted); margin: 4px 0 0 0;">The LLM judge will evaluate each response against this guideline.</p>
+                                                </div>
+                                            ` : null}
+
+                                            <!-- Advanced options -->
+                                            <div>
+                                                <button
+                                                    onClick=${function(){ setShowAdvanced(!showAdvanced); }}
+                                                    style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 12px; font-weight: 500; padding: 0; display: flex; align-items: center; gap: 4px;"
+                                                >
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style=${'width: 12px; height: 12px; transition: transform 0.15s ease; ' + (showAdvanced ? 'transform: rotate(90deg);' : '')}><path d="m9 18 6-6-6-6"></path></svg>
+                                                    Advanced Options
+                                                </button>
+                                                ${showAdvanced ? html`
+                                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
+                                                        <div>
+                                                            <div style=${fieldLabelStyle}>Temperature Override</div>
+                                                            <input type="text" placeholder="e.g. 0.3" value=${evalTemp} onInput=${function(e){ setEvalTemp(e.target.value); }} style=${inputStyle} />
+                                                        </div>
+                                                        <div>
+                                                            <div style=${fieldLabelStyle}>Max Tokens</div>
+                                                            <input type="text" placeholder="e.g. 4096" value=${evalMaxTokens} onInput=${function(e){ setEvalMaxTokens(e.target.value); }} style=${inputStyle} />
+                                                        </div>
+                                                    </div>
+                                                ` : null}
+                                            </div>
+                                        </div>
+                                    ` : null}
+
+                                    <!-- STEP 2: Review -->
+                                    ${evalStep === 2 ? html`
+                                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                                            <!-- Run Name -->
+                                            <div>
+                                                <div style=${fieldLabelStyle}>Run Name</div>
+                                                <input type="text" value=${evalRunName} onInput=${function(e){ setEvalRunName(e.target.value); }} style=${inputStyle + ' font-family: var(--font-mono, monospace); font-size: 12px;'} />
+                                                <p style="font-size: 10px; color: var(--text-muted); margin: 4px 0 0 0;">Auto-generated from your selections. Edit to customize.</p>
+                                            </div>
+
+                                            <!-- Summary cards -->
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <!-- Suite -->
+                                                <div style="padding: 10px 14px; border-radius: 10px; background: var(--bg-page); border: 1px solid var(--border-subtle);">
+                                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                                        <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;">Suite</span>
+                                                        <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">${evalSuite || '—'}</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Dataset -->
+                                                <div style="padding: 10px 14px; border-radius: 10px; background: var(--bg-page); border: 1px solid var(--border-subtle);">
+                                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                                        <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;">Dataset</span>
+                                                        <div style="text-align: right;">
+                                                            <span style="font-size: 13px; font-weight: 600; color: var(--text-primary); font-family: var(--font-mono, monospace);">${selectedDatasetObj ? selectedDatasetObj.name : '—'}</span>
+                                                            ${selectedDatasetObj ? html`<span style="font-size: 11px; color: var(--text-muted); margin-left: 6px;">${selectedDatasetObj.count} examples</span>` : null}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Model -->
+                                                <div style="padding: 10px 14px; border-radius: 10px; background: var(--bg-page); border: 1px solid var(--border-subtle);">
+                                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                                        <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;">Model</span>
+                                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                                            ${selectedModelObj ? html`<img src=${'https://www.google.com/s2/favicons?sz=32&domain=' + selectedModelObj.domain} alt="" style="width: 14px; height: 14px; border-radius: 2px;" />` : null}
+                                                            <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">${selectedModelObj ? selectedModelObj.name : '—'}</span>
+                                                            ${selectedModelObj ? html`<span style="font-size: 11px; color: var(--text-muted);">${selectedModelObj.provider}</span>` : null}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Scorers -->
+                                                <div style="padding: 10px 14px; border-radius: 10px; background: var(--bg-page); border: 1px solid var(--border-subtle);">
+                                                    <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+                                                        <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; margin-top: 2px;">Scorers</span>
+                                                        <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end;">
+                                                            ${scorerDefs.filter(function(sc){ return evalScorers[sc.key]; }).map(function(sc) {
+                                                                return html`<span style="font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); font-weight: 600;">${sc.name}</span>`;
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                    ${evalScorers.guidelines && evalGuideline ? html`
+                                                        <div style="margin-top: 8px; padding: 8px 10px; border-radius: 6px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+                                                            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">Guideline</div>
+                                                            <div style="font-size: 12px; color: var(--text-secondary); font-style: italic; line-height: 1.4;">"${evalGuideline}"</div>
+                                                        </div>
+                                                    ` : null}
+                                                </div>
+
+                                                <!-- Advanced overrides (if set) -->
+                                                ${(evalTemp || evalMaxTokens) ? html`
+                                                    <div style="padding: 10px 14px; border-radius: 10px; background: var(--bg-page); border: 1px solid var(--border-subtle);">
+                                                        <div style="display: flex; align-items: center; gap: 16px;">
+                                                            <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;">Overrides</span>
+                                                            ${evalTemp ? html`<span style="font-size: 12px; color: var(--text-secondary);">Temperature: <span style="font-weight: 600; color: var(--text-primary); font-family: var(--font-mono, monospace);">${evalTemp}</span></span>` : null}
+                                                            ${evalMaxTokens ? html`<span style="font-size: 12px; color: var(--text-secondary);">Max Tokens: <span style="font-weight: 600; color: var(--text-primary); font-family: var(--font-mono, monospace);">${evalMaxTokens}</span></span>` : null}
+                                                        </div>
+                                                    </div>
+                                                ` : null}
+                                            </div>
+                                        </div>
+                                    ` : null}
+
+                                </div>
+
+                                <!-- Footer -->
+                                <div style=${modalFooterStyle}>
+                                    <div>
+                                        ${evalStep > 0 ? html`
+                                            <button onClick=${function(){ setEvalStep(evalStep - 1); }} style=${btnSecondary} onmouseenter=${function(e){ e.currentTarget.style.background='rgba(255,255,255,0.04)'; }} onmouseleave=${function(e){ e.currentTarget.style.background='transparent'; }}>Back</button>
+                                        ` : html`
+                                            <button onClick=${closeNewEval} style=${btnSecondary} onmouseenter=${function(e){ e.currentTarget.style.background='rgba(255,255,255,0.04)'; }} onmouseleave=${function(e){ e.currentTarget.style.background='transparent'; }}>Cancel</button>
+                                        `}
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        ${evalStep === 0 ? html`
+                                            <button
+                                                disabled=${!canProceedStep0}
+                                                onClick=${function(){ if (canProceedStep0) setEvalStep(1); }}
+                                                style=${btnPrimary + (!canProceedStep0 ? ' opacity: 0.4; cursor: not-allowed;' : '')}
+                                                onmouseenter=${function(e){ if (canProceedStep0) e.currentTarget.style.filter='brightness(1.15)'; }}
+                                                onmouseleave=${function(e){ e.currentTarget.style.filter=''; }}
+                                            >Continue</button>
+                                        ` : evalStep === 1 ? html`
+                                            <button
+                                                disabled=${!canProceedStep1}
+                                                onClick=${function(){ if (canProceedStep1) setEvalStep(2); }}
+                                                style=${btnPrimary + (!canProceedStep1 ? ' opacity: 0.4; cursor: not-allowed;' : '')}
+                                                onmouseenter=${function(e){ if (canProceedStep1) e.currentTarget.style.filter='brightness(1.15)'; }}
+                                                onmouseleave=${function(e){ e.currentTarget.style.filter=''; }}
+                                            >Continue</button>
+                                        ` : html`
+                                            <button
+                                                onClick=${function(){ closeNewEval(); }}
+                                                style=${btnPrimary}
+                                                onmouseenter=${function(e){ e.currentTarget.style.filter='brightness(1.15)'; }}
+                                                onmouseleave=${function(e){ e.currentTarget.style.filter=''; }}
+                                            >
+                                                <span style="display: flex; align-items: center; gap: 6px;">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                                    Run Evaluation
+                                                </span>
+                                            </button>
+                                        `}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ` : null}
                     <div style="background: var(--bg-page); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden;">
                         <table style="width: 100%; border-collapse: collapse; background: var(--bg-page);">
                             <thead>
                                 <tr style="border-bottom: 1px solid var(--border-subtle);">
                                     <th style="padding: 10px 16px; text-align: left; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; background: var(--bg-page);">Run</th>
-                                    <th style="padding: 10px 16px; text-align: left; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; background: var(--bg-page);">Score</th>
-                                    <th style="padding: 10px 16px; text-align: left; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; background: var(--bg-page);">Cost</th>
-                                    <th style="padding: 10px 16px; text-align: left; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; background: var(--bg-page);">When</th>
+                                    <th style="padding: 10px 16px; text-align: left; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; background: var(--bg-page); width: 120px;">Score</th>
+                                    <th style="padding: 10px 16px; text-align: left; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; background: var(--bg-page); width: 80px;">When</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${pageRows.length ? pageRows.map(function(r) {
                                     var score = evalScoreStatus(r);
-                                    var costText = (typeof r.costUsd === 'number') ? (r.costUsd === 0 ? '$0.00' : ('$' + r.costUsd.toFixed(3))) : '—';
-                                    var costCls = 'cost-success';
-                                    if (typeof r.costUsd === 'number') { if (r.costUsd <= 0.25) costCls = 'cost-success'; else if (r.costUsd <= 0.50) costCls = 'cost-warning'; else costCls = 'cost-error'; } else { costCls = 'cost-none'; }
+                                    var suiteBadgeColors = {
+                                        'Regression': { bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.30)', color: '#60a5fa' },
+                                        'ToolCallCorrectness': { bg: 'rgba(168,85,247,0.12)', border: 'rgba(168,85,247,0.30)', color: '#c084fc' },
+                                        'RAGGrounding': { bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.30)', color: '#34d399' },
+                                        'Jailbreak': { bg: 'rgba(244,63,94,0.12)', border: 'rgba(244,63,94,0.30)', color: '#fb7185' },
+                                        'PolicyEdgeCases': { bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.30)', color: '#fbbf24' },
+                                        'Custom': { bg: 'rgba(255,255,255,0.06)', border: 'rgba(255,255,255,0.12)', color: 'var(--text-muted)' }
+                                    };
+                                    var sbc = suiteBadgeColors[r.suite] || suiteBadgeColors['Custom'];
+
                                     return html`
-                                        <tr style="border-bottom: 1px solid var(--border-subtle); cursor: pointer;" onmouseenter=${function(e){ e.currentTarget.style.background='var(--bg-hover)'; }} onmouseleave=${function(e){ e.currentTarget.style.background=''; }}>
+                                        <tr
+                                            style="border-bottom: 1px solid var(--border-subtle); cursor: pointer;"
+                                            onmouseenter=${function(e){ e.currentTarget.style.background='var(--bg-hover)'; }}
+                                            onmouseleave=${function(e){ e.currentTarget.style.background=''; }}
+                                            onClick=${function(){ window.__showEvalRunDetail(r); }}
+                                        >
                                             <td style="padding: 12px 16px; font-size: 13px; color: var(--text-primary); font-weight: 500;">
-                                                <div style="display: flex; flex-direction: column; gap: 2px;">
-                                                    <span>${r.runName}</span>
-                                                    <div style="font-size: 12px; color: var(--text-secondary); display: flex; flex-wrap: wrap; gap: 10px;">
-                                                        ${(r.models && r.models.length) ? html`<span><span style="color: var(--text-muted);">Model</span>${': '}${(r.models || []).map(function(m, idx){ return html`<${ModelBadge} model=${m} />${idx < r.models.length - 1 ? ' ' : ''}`; })}</span>` : null}
-                                                        ${(r.tools && r.tools.length) ? html`<span><span style="color: var(--text-muted);">Tools</span>${': '}${(r.tools || []).map(function(t, idx){ return html`<${ToolBadge} tool=${t} />${idx < r.tools.length - 1 ? ' ' : ''}`; })}</span>` : null}
-                                                        ${(r.databases && r.databases.length) ? html`<span><span style="color: var(--text-muted);">Databases</span>${': '}${(r.databases || []).map(function(d, idx){ var nav = (d && d.nav) ? d.nav : 'databases'; return html`<span><a href="#" style="color: var(--text-secondary); text-decoration: none;" onmouseenter=${function(e){ e.target.style.textDecoration='underline'; }} onmouseleave=${function(e){ e.target.style.textDecoration='none'; }} onClick=${function(e){ e.preventDefault(); window.showView(nav); }}>${d.name}</a>${idx < r.databases.length - 1 ? ', ' : ''}</span>`; })}</span>` : null}
+                                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                                    <span style="font-family: var(--font-mono, monospace); font-size: 12px; color: var(--text-primary); font-weight: 500;">${r.runName}</span>
+                                                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                                                        ${r.suite ? html`<span style=${'font-size: 10px; padding: 1px 7px; border-radius: 999px; font-weight: 600; background: ' + sbc.bg + '; border: 1px solid ' + sbc.border + '; color: ' + sbc.color + ';'}>${r.suite}</span>` : null}
+                                                        ${r.dataset ? html`<span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono, monospace);">${r.dataset}${r.datasetCount ? html`<span style="color: var(--text-muted); opacity: 0.6;"> · ${r.datasetCount}</span>` : null}</span>` : null}
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td style="padding: 12px 16px; font-size: 13px;"><span class=${score.cls} style="font-family: var(--font-mono, monospace);">● ${score.label}</span></td>
-                                            <td style="padding: 12px 16px; font-size: 13px;"><span class=${costCls} style="font-family: var(--font-mono, monospace);">${costText}</span></td>
-                                            <td style="padding: 12px 16px; font-size: 13px; color: var(--text-secondary);">${r.when || '—'}</td>
+                                            <td style="padding: 12px 16px; font-size: 12px; vertical-align: top;">
+                                                <span class=${score.cls} style="font-size: 12px; font-family: var(--font-mono, monospace); font-weight: 600;">● ${score.label}</span>
+                                            </td>
+                                            <td style="padding: 12px 16px; font-size: 13px; color: var(--text-secondary); vertical-align: top;">${r.when || '—'}</td>
                                         </tr>
                                     `;
-                                }) : html`<tr><td colspan="4" style="padding: 28px 16px; font-size: 13px; color: var(--text-muted); text-align: center;">No results found</td></tr>`}
+                                }) : html`<tr><td colspan="3" style="padding: 28px 16px; font-size: 13px; color: var(--text-muted); text-align: center;">No results found</td></tr>`}
                             </tbody>
                         </table>
                         <div class="table-footer flex items-center justify-between" style="padding: 10px 16px;">
@@ -6380,6 +6786,158 @@
                 </div>
             `;
         }
+
+        // --------------------------------------------------
+        // Eval Run Detail View (Preact component)
+        // --------------------------------------------------
+        function EvalRunDetailView(props) {
+            var r = props.run || {};
+            var score = evalScoreStatus(r);
+
+            var suiteBadgeColors = {
+                'Regression': { bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.30)', color: '#60a5fa' },
+                'ToolCallCorrectness': { bg: 'rgba(168,85,247,0.12)', border: 'rgba(168,85,247,0.30)', color: '#c084fc' },
+                'RAGGrounding': { bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.30)', color: '#34d399' },
+                'Jailbreak': { bg: 'rgba(244,63,94,0.12)', border: 'rgba(244,63,94,0.30)', color: '#fb7185' },
+                'PolicyEdgeCases': { bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.30)', color: '#fbbf24' },
+                'Custom': { bg: 'rgba(255,255,255,0.06)', border: 'rgba(255,255,255,0.12)', color: 'var(--text-muted)' }
+            };
+            var sbc = suiteBadgeColors[r.suite] || suiteBadgeColors['Custom'];
+
+            var scorerStatusColor = function(s) {
+                if (s === 'pass') return '#10b981';
+                if (s === 'warn') return '#f59e0b';
+                return '#ef4444';
+            };
+
+            var sectionLabel = 'font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px;';
+            var cardStyle = 'padding: 16px; border-radius: var(--radius-lg); background: var(--bg-page); border: 1px solid var(--border-subtle);';
+
+            return html`
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    <!-- Header -->
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <a href="#" onClick=${function(e){ e.preventDefault(); window.showView('agent-evaluations'); }} style="color: var(--text-muted); text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 4px; transition: color 0.15s ease;" onmouseenter=${function(e){ e.currentTarget.style.color='var(--text-primary)'; }} onmouseleave=${function(e){ e.currentTarget.style.color='var(--text-muted)'; }}>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="m15 18-6-6 6-6"></path></svg>
+                                Back to Evaluations
+                            </a>
+                        </div>
+                        <h1 style="font-size: 22px; font-weight: 600; color: var(--text-primary); margin: 0 0 8px 0; line-height: 1.3; font-family: var(--font-mono, monospace);">${r.runName || 'Evaluation Run'}</h1>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            ${r.suite ? html`<span style=${'font-size: 11px; padding: 2px 10px; border-radius: 999px; font-weight: 600; background: ' + sbc.bg + '; border: 1px solid ' + sbc.border + '; color: ' + sbc.color + ';'}>${r.suite}</span>` : null}
+                            <span class=${score.cls} style="font-size: 12px; font-family: var(--font-mono, monospace); font-weight: 600;">● ${score.label}</span>
+                            ${r.when ? html`<span style="font-size: 12px; color: var(--text-muted);">${r.when}</span>` : null}
+                        </div>
+                    </div>
+
+                    <!-- Top grid: Scorers + Configuration -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+                        <!-- Scorers -->
+                        <div style=${cardStyle}>
+                            <div style=${sectionLabel}>Scorers</div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                ${(r.scorers && r.scorers.length) ? r.scorers.map(function(sc) {
+                                    var scColor = scorerStatusColor(sc.status);
+                                    var pct = typeof sc.score === 'number' ? (sc.score * 100).toFixed(0) : 0;
+                                    return html`
+                                        <div>
+                                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                                <div style="display: flex; align-items: center; gap: 6px;">
+                                                    <span style=${'width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: ' + scColor + ';'}></span>
+                                                    <span style="font-size: 13px; font-weight: 500; color: var(--text-primary);">${sc.name}</span>
+                                                </div>
+                                                <span style=${'font-size: 13px; font-family: var(--font-mono, monospace); font-weight: 600; color: ' + scColor + ';'}>${pct}%</span>
+                                            </div>
+                                            <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.06); overflow: hidden;">
+                                                <div style=${'height: 100%; border-radius: 2px; background: ' + scColor + '; width: ' + pct + '%; transition: width 0.3s ease;'}></div>
+                                            </div>
+                                            ${sc.guideline ? html`<div style="font-size: 10px; color: var(--text-muted); margin-top: 4px; font-style: italic;">"${sc.guideline}"</div>` : null}
+                                        </div>
+                                    `;
+                                }) : html`<span style="font-size: 12px; color: var(--text-muted);">No scorers</span>`}
+                            </div>
+                        </div>
+
+                        <!-- Configuration -->
+                        <div style=${cardStyle}>
+                            <div style=${sectionLabel}>Configuration</div>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <!-- Dataset -->
+                                <div>
+                                    <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 2px;">Dataset</div>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span style="font-size: 13px; font-weight: 600; color: var(--text-primary); font-family: var(--font-mono, monospace);">${r.dataset || '—'}</span>
+                                        ${r.datasetCount ? html`<span style="font-size: 11px; color: var(--text-muted);">${r.datasetCount} examples</span>` : null}
+                                    </div>
+                                </div>
+                                <!-- Model -->
+                                ${(r.models && r.models.length) ? html`
+                                    <div>
+                                        <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 2px;">Model</div>
+                                        ${r.models.map(function(m) {
+                                            return html`<div style="display: flex; align-items: center; gap: 6px;">
+                                                ${m.domain ? html`<img src=${'https://www.google.com/s2/favicons?sz=32&domain=' + m.domain} alt="" style="width: 16px; height: 16px; border-radius: 3px;" />` : null}
+                                                <a href="#" style="font-size: 13px; font-weight: 600; color: var(--text-primary); text-decoration: none;" onmouseenter=${function(e){ e.target.style.textDecoration='underline'; }} onmouseleave=${function(e){ e.target.style.textDecoration='none'; }} onClick=${function(e){ e.preventDefault(); if (m.nav) window.showView(m.nav); }}>${m.name}</a>
+                                                ${m.provider ? html`<span style="font-size: 11px; color: var(--text-muted);">${m.provider}</span>` : null}
+                                            </div>`;
+                                        })}
+                                    </div>
+                                ` : null}
+                                <!-- Metrics -->
+                                <div style="display: flex; gap: 20px;">
+                                    ${typeof r.latencyMs === 'number' ? html`
+                                        <div>
+                                            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 2px;">Latency</div>
+                                            <span style="font-size: 16px; font-weight: 600; color: var(--text-primary); font-family: var(--font-mono, monospace);">${r.latencyMs}ms</span>
+                                        </div>
+                                    ` : null}
+                                    ${typeof r.costUsd === 'number' ? html`
+                                        <div>
+                                            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 2px;">Cost</div>
+                                            <span style="font-size: 16px; font-weight: 600; color: var(--text-primary); font-family: var(--font-mono, monospace);">${r.costUsd === 0 ? '$0.00' : '$' + r.costUsd.toFixed(3)}</span>
+                                        </div>
+                                    ` : null}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tools & Databases -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        ${(r.tools && r.tools.length) ? html`
+                            <div style=${cardStyle}>
+                                <div style=${sectionLabel}>Tools</div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                    ${r.tools.map(function(t) { return html`<${ToolBadge} tool=${t} />`; })}
+                                </div>
+                            </div>
+                        ` : null}
+                        ${(r.databases && r.databases.length) ? html`
+                            <div style=${cardStyle}>
+                                <div style=${sectionLabel}>Databases</div>
+                                <div style="display: flex; flex-direction: column; gap: 6px;">
+                                    ${r.databases.map(function(d) {
+                                        var nav = (d && d.nav) ? d.nav : 'databases';
+                                        return html`<a href="#" style="font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none;" onmouseenter=${function(e){ e.target.style.textDecoration='underline'; }} onmouseleave=${function(e){ e.target.style.textDecoration='none'; }} onClick=${function(e){ e.preventDefault(); window.showView(nav); }}>${d.name}</a>`;
+                                    })}
+                                </div>
+                            </div>
+                        ` : null}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Global helper to navigate to eval run detail
+        window.__showEvalRunDetail = function(run) {
+            var root = document.getElementById('eval-run-detail-root');
+            if (root) {
+                render(html`<${EvalRunDetailView} run=${run} />`, root);
+            }
+            window.showView('eval-run-detail');
+        };
 
         // --------------------------------------------------
         // Reusable: AgentAnalyticsView (Jobs Dashboard)
@@ -6439,7 +6997,7 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
                                 <input type="text" placeholder="Search jobs..." value=${query} onInput=${function(e){ setQuery(e.target.value); }} />
                             </div>
-                            <button style="padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; background: rgba(34,114,180,0.15); border: 1px solid rgba(34,114,180,0.3); color: var(--color-primary); transition: all 0.15s ease; white-space: nowrap;" onmouseenter=${function(e){ e.target.style.background='rgba(34,114,180,0.25)'; }} onmouseleave=${function(e){ e.target.style.background='rgba(34,114,180,0.15)'; }}>+ New Job</button>
+                            <button class="btn btn-ghost" style="white-space: nowrap; color: var(--text-primary);">+ New Job</button>
                         </div>
                     </div>
 
@@ -6629,7 +7187,7 @@
                     rows=${agentTableRows}
                     autoPageSize=${true}
                     maxRows=${16}
-                    headerActions=${html`<button class="btn btn-primary" style="white-space: nowrap;">+ New Agent</button>`}
+                    headerActions=${html`<button class="btn btn-ghost" style="white-space: nowrap; color: var(--text-primary);">+ New Agent</button>`}
                 />`, agentsTableRoot);
             }
 
@@ -6823,11 +7381,87 @@
             var agentEvalsRoot = document.getElementById('agent-evaluations-root');
             if (agentEvalsRoot) {
                 render(html`<${AgentEvaluationsView} name="Customer Support Bot" runs=${[
-                    { ts: 1738833120000, runName: 'predeploy_regression_golden_answers_v5__llama3_70b_vllm__2026-02-06', suite: 'Regression', dataset: 'golden-answers-v5', quality: 0.83, safety: 0.91, latencyMs: 420, costUsd: 0, when: '2h ago', models: [{ name: 'vLLM: Llama 3.1 70B', nav: 'models' }], tools: [{ name: 'Slack v3', nav: 'tools' }, { name: 'GitHub v2', nav: 'tools' }, { name: 'Notion v1', nav: 'tools' }], databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }, { name: 'product-knowledge-store', nav: 'db-detail-pks' }] },
-                    { ts: 1738747800000, runName: 'predeploy_tool_call_correctness__zendesk_ticketing__gpt-4o-mini__2026-02-05', suite: 'ToolCallCorrectness', dataset: 'zendesk-flows-v2', quality: 0.78, safety: 0.89, latencyMs: 310, costUsd: 0.18, when: '1d ago', models: [{ name: 'openai: gpt-4o-mini', nav: 'models' }], tools: [{ name: 'Slack v3', nav: 'tools' }], databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }] },
-                    { ts: 1738678260000, runName: 'predeploy_rag_grounding__kb_citations__mistral_small_24b_self_hosted__2026-02-04', suite: 'RAGGrounding', dataset: 'support-kb-qa-v1', quality: 0.69, safety: 0.84, latencyMs: 540, costUsd: 0, when: '2d ago', models: [{ name: 'Ollama: Mistral Small 24B', nav: 'models' }], tools: [{ name: 'Notion v1', nav: 'tools' }], databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }] },
-                    { ts: 1738584300000, runName: 'predeploy_safety_jailbreak__safety_probes_v2__bedrock_claude_3_5__2026-02-03', suite: 'Jailbreak', dataset: 'safety-probes-v2', quality: 0.64, safety: 0.66, latencyMs: 980, costUsd: 0.52, when: '3d ago', models: [{ name: 'vercel: Claude 3.5 Sonnet', nav: 'models' }], tools: [{ name: 'Notion v1', nav: 'tools' }], databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }] },
-                    { ts: 1738416240000, runName: 'predeploy_policy_edge_cases__refund_policy_v1__gpt-4.1__2026-02-01', suite: 'PolicyEdgeCases', dataset: 'refund-policy-v1', quality: 0.67, safety: 0.81, latencyMs: 660, costUsd: 0.61, when: '5d ago', models: [{ name: 'openai: gpt-4.1', nav: 'models' }], tools: [{ name: 'refund.policy_lookup', nav: 'tools' }], databases: [{ name: 'product-knowledge-store', nav: 'db-detail-pks' }] }
+                    {
+                        ts: 1738833120000,
+                        runName: 'predeploy_regression__golden_answers_v5__llama3_70b_vllm__2026-02-06',
+                        suite: 'Regression',
+                        dataset: 'golden-answers-v5',
+                        datasetCount: 214,
+                        quality: 0.83, safety: 0.91, latencyMs: 420, costUsd: 0, when: '2h ago',
+                        models: [{ name: 'Llama 3.1 70B', provider: 'vLLM (self-hosted)', domain: 'docs.vllm.ai', nav: 'models' }],
+                        tools: [{ name: 'Slack v3', nav: 'tools' }, { name: 'GitHub v2', nav: 'tools' }, { name: 'Notion v1', nav: 'tools' }],
+                        databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }, { name: 'product-knowledge-store', nav: 'db-detail-pks' }],
+                        scorers: [
+                            { name: 'Correctness', score: 0.85, status: 'pass' },
+                            { name: 'Relevance', score: 0.81, status: 'pass' },
+                            { name: 'Safety', score: 0.91, status: 'pass' },
+                            { name: 'Groundedness', score: 0.79, status: 'pass' }
+                        ]
+                    },
+                    {
+                        ts: 1738747800000,
+                        runName: 'predeploy_toolcallcorrectness__zendesk_flows_v2__gpt-4o-mini__2026-02-05',
+                        suite: 'ToolCallCorrectness',
+                        dataset: 'zendesk-flows-v2',
+                        datasetCount: 87,
+                        quality: 0.78, safety: 0.89, latencyMs: 310, costUsd: 0.18, when: '1d ago',
+                        models: [{ name: 'gpt-4o-mini', provider: 'OpenAI', domain: 'openai.com', nav: 'models' }],
+                        tools: [{ name: 'Slack v3', nav: 'tools' }],
+                        databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }],
+                        scorers: [
+                            { name: 'Correctness', score: 0.78, status: 'warn' },
+                            { name: 'Relevance', score: 0.82, status: 'pass' },
+                            { name: 'Safety', score: 0.89, status: 'pass' }
+                        ]
+                    },
+                    {
+                        ts: 1738678260000,
+                        runName: 'predeploy_raggrounding__support_kb_qa_v1__mistral_small_24b__2026-02-04',
+                        suite: 'RAGGrounding',
+                        dataset: 'support-kb-qa-v1',
+                        datasetCount: 156,
+                        quality: 0.69, safety: 0.84, latencyMs: 540, costUsd: 0, when: '2d ago',
+                        models: [{ name: 'Mistral Small 24B', provider: 'Ollama (self-hosted)', domain: 'mistral.ai', nav: 'models' }],
+                        tools: [{ name: 'Notion v1', nav: 'tools' }],
+                        databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }],
+                        scorers: [
+                            { name: 'Correctness', score: 0.65, status: 'warn' },
+                            { name: 'Groundedness', score: 0.72, status: 'warn' },
+                            { name: 'Relevance', score: 0.70, status: 'warn' }
+                        ]
+                    },
+                    {
+                        ts: 1738584300000,
+                        runName: 'predeploy_jailbreak__safety_probes_v2__claude_3_5_sonnet__2026-02-03',
+                        suite: 'Jailbreak',
+                        dataset: 'safety-probes-v2',
+                        datasetCount: 340,
+                        quality: 0.64, safety: 0.66, latencyMs: 980, costUsd: 0.52, when: '3d ago',
+                        models: [{ name: 'Claude 3.5 Sonnet', provider: 'Anthropic', domain: 'anthropic.com', nav: 'models' }],
+                        tools: [{ name: 'Notion v1', nav: 'tools' }],
+                        databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }],
+                        scorers: [
+                            { name: 'Safety', score: 0.66, status: 'fail' },
+                            { name: 'Correctness', score: 0.64, status: 'fail' },
+                            { name: 'Guidelines', score: 0.71, status: 'warn', guideline: 'Must refuse all jailbreak attempts without leaking system prompt' }
+                        ]
+                    },
+                    {
+                        ts: 1738416240000,
+                        runName: 'predeploy_policyedgecases__refund_policy_v1__gpt-4_1__2026-02-01',
+                        suite: 'PolicyEdgeCases',
+                        dataset: 'refund-policy-v1',
+                        datasetCount: 62,
+                        quality: 0.67, safety: 0.81, latencyMs: 660, costUsd: 0.61, when: '5d ago',
+                        models: [{ name: 'gpt-4.1', provider: 'OpenAI', domain: 'openai.com', nav: 'models' }],
+                        tools: [{ name: 'refund.policy_lookup', nav: 'tools' }],
+                        databases: [{ name: 'product-knowledge-store', nav: 'db-detail-pks' }],
+                        scorers: [
+                            { name: 'Correctness', score: 0.67, status: 'warn' },
+                            { name: 'Safety', score: 0.81, status: 'pass' },
+                            { name: 'Guidelines', score: 0.62, status: 'fail', guideline: 'Must cite specific policy section numbers in every refund response' }
+                        ]
+                    }
                 ]} />`, agentEvalsRoot);
             }
 
@@ -8354,6 +8988,9 @@
                 case 'agent-evaluations':
                     html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-detail-cs">Customer Support Bot</span><span class="separator">›</span><span class="current">Evaluations</span>';
                     break;
+                case 'eval-run-detail':
+                    html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-detail-cs">Customer Support Bot</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-evaluations">Evaluations</span><span class="separator">›</span><span class="current">Run Detail</span>';
+                    break;
                 case 'deployment-jobs': {
                     var base = (window.__currentDeploymentBase) ? window.__currentDeploymentBase : 'deployment-cs-prod';
                     var ctx = (window.__deploymentCtx && window.__deploymentCtx[base]) ? window.__deploymentCtx[base] : null;
@@ -8429,7 +9066,7 @@
 
         function updateSidebar(viewId) {
             // View → parent-group mappings
-            var agentViews = ['agents', 'agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-evaluations', 'deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-pks-prod', 'eval-detail', 'trace-detail', 'chunk-lineage'];
+            var agentViews = ['agents', 'agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-evaluations', 'eval-run-detail', 'deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-pks-prod', 'eval-detail', 'trace-detail', 'chunk-lineage'];
             var pipelineViews = ['pipelines', 'evaluations', 'chunks'];
             var dbViews = ['databases', 'db-detail-pks', 'db-detail-sas', 'deployment-pks-prod'];
             var modelViews = ['models', 'model-gpt-4-turbo'];
@@ -8472,10 +9109,10 @@
             var subDeploymentsViews = ['agent-deployments', 'deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-pks-prod'];
             var subAnalyticsViews = [];
             var subAlertsViews = [];
-            var subEvalsViews = ['agent-evaluations', 'eval-detail', 'trace-detail', 'chunk-lineage'];
+            var subEvalsViews = ['agent-evaluations', 'eval-run-detail', 'eval-detail', 'trace-detail', 'chunk-lineage'];
 
             // Views that show the agents subpanel (agent detail drilldowns only, NOT the agents table)
-            var agentDetailDrillViews = ['agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-evaluations', 'eval-detail', 'trace-detail', 'chunk-lineage'];
+            var agentDetailDrillViews = ['agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-evaluations', 'eval-run-detail', 'eval-detail', 'trace-detail', 'chunk-lineage'];
             var showAgentsSubpanel = agentDetailDrillViews.indexOf(viewId) !== -1;
 
             if (agentsPanel && depPanel) {
