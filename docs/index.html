@@ -489,7 +489,7 @@
             margin-left: 12px !important;
             margin-right: 12px !important;
             width: calc(100% - 24px) !important;
-            font-size: var(--font-size-2xl) !important; /* match .text-xl */
+            font-size: var(--font-size-lg) !important;
             font-weight: var(--font-weight-semibold) !important;
             line-height: 1.25 !important;
             display: flex !important;
@@ -497,6 +497,8 @@
             justify-content: center !important;
             margin-top: 0 !important;
             margin-bottom: 0 !important;
+            padding-top: 12px !important;
+            padding-bottom: 4px !important;
         }
 
         /* Deployment subpanel header: match sizing, pad top > bottom */
@@ -2222,15 +2224,6 @@
                                 </span>
                                 Deployments
                             </div>
-                            <div class="sidebar-subpanel-item" data-nav="agent-analytics">
-                                <span class="sidebar-subpanel-item-icon" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="3"></circle>
-                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                                    </svg>
-                                </span>
-                                Jobs
-                            </div>
                             <div class="sidebar-subpanel-item" data-nav="agent-evaluations">
                                 <span class="sidebar-subpanel-item-icon" aria-hidden="true">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2268,15 +2261,14 @@
                                 </span>
                                 Usage
                             </div>
-                            <div class="sidebar-subpanel-item" data-dep-tab="analytics">
+                            <div class="sidebar-subpanel-item" data-nav="deployment-jobs" data-dep-tab="analytics">
                                 <span class="sidebar-subpanel-item-icon" aria-hidden="true">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10"></path>
-                                        <path d="M2 12h20"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                                     </svg>
                                 </span>
-                                Analytics
+                                Jobs
                             </div>
                             <div class="sidebar-subpanel-item" data-nav="deployment-alerts" data-dep-tab="alerts">
                                 <span class="sidebar-subpanel-item-icon" aria-hidden="true">
@@ -3417,11 +3409,6 @@
                     <div id="agent-evaluations-root"></div>
                 </div>
 
-                <!-- View: Agent Analytics -->
-                <div id="view-agent-analytics" class="view">
-                    <div id="agent-analytics-root"></div>
-                </div>
-
                 <!-- View: Agent Detail — Product Advisor Agent (Preact) -->
                 <div id="view-agent-detail-pa" class="view">
                     <div id="agent-detail-pa-root"></div>
@@ -3677,6 +3664,11 @@
                 <!-- View: Deployment Usage — Customer Support prod -->
                 <div id="view-deployment-cs-prod-usage" class="view">
                     <div id="deployment-cs-prod-usage-root"></div>
+                </div>
+
+                <!-- View: Deployment Jobs Dashboard (replaces Analytics tab) -->
+                <div id="view-deployment-jobs" class="view">
+                    <div id="deployment-jobs-root"></div>
                 </div>
 
                 <!-- View: Deployment Detail — Customer Support (OpenAI hosted) -->
@@ -5285,6 +5277,8 @@
             var setGuardrails = _guardrails[1];
 
             var model = props.model || null;
+            var _modelProviderDomains = {'openai':'openai.com','anthropic':'anthropic.com','google':'ai.google.dev','meta':'meta.ai','mistral':'mistral.ai','cohere':'cohere.com','vllm':'docs.vllm.ai','azure':'azure.microsoft.com'};
+            var modelFavDomain = model ? (_modelProviderDomains[(model.provider||'').toLowerCase().split(/[\s(]/)[0]] || null) : null;
             var _cap = useState(props.capabilities || { streaming: true, pushNotifications: true, stateTransitionHistory: false });
             var capabilities = _cap[0];
             var setCapabilities = _cap[1];
@@ -5586,7 +5580,7 @@
                             </div>
                             <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch;">
                                 <div style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 10px; background: rgba(55,68,79,0.55); border: 1px solid rgba(232,236,240,0.10);">
-                                    <span style="font-size: 18px;">🧠</span>
+                                    ${modelFavDomain ? html`<img src=${'https://www.google.com/s2/favicons?sz=64&domain=' + modelFavDomain} alt="" style="width: 18px; height: 18px; border-radius: 3px; flex-shrink: 0;" />` : html`<span style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 3px; background: rgba(255,255,255,0.06); color: var(--text-muted); font-size: 11px; font-weight: 700;">AI</span>`}
                                     <div>
                                         <div style="font-size: 13px; font-weight: 600; color: var(--text-primary);">${model.name}</div>
                                         <div style="font-size: 11px; color: var(--text-muted);">${model.provider}${model.contextWindow ? ' · ' + model.contextWindow + ' context' : ''}</div>
@@ -5600,7 +5594,7 @@
                                         onmouseenter=${function(e){ e.currentTarget.style.background='rgba(55,68,79,0.72)'; e.currentTarget.style.borderColor='rgba(232,236,240,0.16)'; }}
                                         onmouseleave=${function(e){ e.currentTarget.style.background='rgba(55,68,79,0.55)'; e.currentTarget.style.borderColor='rgba(232,236,240,0.10)'; }}
                                     >
-                                        <span style="font-size: 16px;">📝</span>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; flex-shrink: 0; color: var(--text-muted);"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5Z"></path></svg>
                                         <div style="flex: 1; min-width: 0;">
                                             <div style="font-size: 12px; font-weight: 600; color: var(--text-primary);">${model.prompt.name}</div>
                                             <div style="font-size: 11px; color: var(--text-muted);">System Prompt</div>
@@ -5642,7 +5636,6 @@
                                                     >×</button>
                                                 ` : null}
                                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                                    <span style="font-size: 16px;">${skill.icon || '⚡'}</span>
                                                     <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">${skill.name}</span>
                                                 </div>
                                                 <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4;">${skill.description}</div>
@@ -6839,85 +6832,130 @@
             }
 
             // --------------------------------------------------
-            // Agent Analytics View
+            // Deployment Jobs Dashboard (replaces Deployment Analytics tab)
             // --------------------------------------------------
-            var agentAnalyticsRoot = document.getElementById('agent-analytics-root');
-            if (agentAnalyticsRoot) {
-                render(html`<${AgentAnalyticsView}
-                    name="Customer Support Bot"
-                    jobs=${[
-                        {
-                            name: 'faithfulness-audit',
-                            description: 'LLM-as-a-Judge scoring every response for hallucination & citation fidelity',
-                            type: 'LLM Judge',
-                            platform: 'MLflow',
-                            schedule: 'Every 6h',
-                            lastRunStatus: 'passed',
-                            lastRunLabel: 'Passed · 2h ago',
-                            nextRun: 'in 4h',
-                            runs24h: 4,
-                            passed24h: 4,
-                            failed24h: 0,
-                            enabled: true
-                        },
-                        {
-                            name: 'cost-quality-pareto',
-                            description: 'Plots cost vs quality across model variants to surface Pareto-optimal configs',
-                            type: 'Analysis',
-                            platform: 'OpenShift',
-                            schedule: 'Daily 02:00 UTC',
-                            lastRunStatus: 'passed',
-                            lastRunLabel: 'Passed · 14h ago',
-                            nextRun: 'in 10h',
-                            runs24h: 1,
-                            passed24h: 1,
-                            failed24h: 0,
-                            enabled: true
-                        },
-                        {
-                            name: 'chunk-staleness-scanner',
-                            description: 'Detects outdated or drifted chunks in RAG vector stores via source-hash comparison',
-                            type: 'Pipeline',
-                            platform: 'OpenShift',
-                            schedule: 'Daily 04:00 UTC',
-                            lastRunStatus: 'failed',
-                            lastRunLabel: 'Failed · 10h ago',
-                            nextRun: 'in 18h',
-                            runs24h: 1,
-                            passed24h: 0,
-                            failed24h: 1,
-                            enabled: true
-                        },
-                        {
-                            name: 'trace-clustering',
-                            description: 'Clusters user-agent traces to discover conversation archetypes & failure patterns',
-                            type: 'Pipeline',
-                            platform: 'OpenShift',
-                            schedule: 'Weekly Mon 06:00',
-                            lastRunStatus: 'passed',
-                            lastRunLabel: 'Passed · 3d ago',
-                            nextRun: 'Mon 06:00',
-                            runs24h: 0,
-                            passed24h: 0,
-                            failed24h: 0,
-                            enabled: true
-                        },
-                        {
-                            name: 'satisfaction-regression',
-                            description: 'Monitors CSAT/thumbs-up trends and alerts on statistically significant regressions',
-                            type: 'Monitor',
-                            platform: 'MLflow',
-                            schedule: 'Every 12h',
-                            lastRunStatus: 'passed',
-                            lastRunLabel: 'Passed · 6h ago',
-                            nextRun: 'in 6h',
-                            runs24h: 2,
-                            passed24h: 2,
-                            failed24h: 0,
-                            enabled: true
-                        }
-                    ]}
-                />`, agentAnalyticsRoot);
+            var deploymentJobsRoot = document.getElementById('deployment-jobs-root');
+            var defaultJobs = [
+                {
+                    name: 'faithfulness-audit',
+                    description: 'LLM-as-a-Judge scoring every response for hallucination & citation fidelity',
+                    type: 'LLM Judge',
+                    platform: 'MLflow',
+                    schedule: 'Every 6h',
+                    lastRunStatus: 'passed',
+                    lastRunLabel: 'Passed · 2h ago',
+                    nextRun: 'in 4h',
+                    runs24h: 4,
+                    passed24h: 4,
+                    failed24h: 0,
+                    enabled: true
+                },
+                {
+                    name: 'cost-quality-pareto',
+                    description: 'Plots cost vs quality across model variants to surface Pareto-optimal configs',
+                    type: 'Analysis',
+                    platform: 'OpenShift',
+                    schedule: 'Daily 02:00 UTC',
+                    lastRunStatus: 'passed',
+                    lastRunLabel: 'Passed · 14h ago',
+                    nextRun: 'in 10h',
+                    runs24h: 1,
+                    passed24h: 1,
+                    failed24h: 0,
+                    enabled: true
+                },
+                {
+                    name: 'chunk-staleness-scanner',
+                    description: 'Detects outdated or drifted chunks in RAG vector stores via source-hash comparison',
+                    type: 'Pipeline',
+                    platform: 'OpenShift',
+                    schedule: 'Daily 04:00 UTC',
+                    lastRunStatus: 'failed',
+                    lastRunLabel: 'Failed · 10h ago',
+                    nextRun: 'in 18h',
+                    runs24h: 1,
+                    passed24h: 0,
+                    failed24h: 1,
+                    enabled: true
+                },
+                {
+                    name: 'trace-clustering',
+                    description: 'Clusters user-agent traces to discover conversation archetypes & failure patterns',
+                    type: 'Pipeline',
+                    platform: 'OpenShift',
+                    schedule: 'Weekly Mon 06:00',
+                    lastRunStatus: 'passed',
+                    lastRunLabel: 'Passed · 3d ago',
+                    nextRun: 'Mon 06:00',
+                    runs24h: 0,
+                    passed24h: 0,
+                    failed24h: 0,
+                    enabled: true
+                },
+                {
+                    name: 'satisfaction-regression',
+                    description: 'Monitors CSAT/thumbs-up trends and alerts on statistically significant regressions',
+                    type: 'Monitor',
+                    platform: 'MLflow',
+                    schedule: 'Every 12h',
+                    lastRunStatus: 'passed',
+                    lastRunLabel: 'Passed · 6h ago',
+                    nextRun: 'in 6h',
+                    runs24h: 2,
+                    passed24h: 2,
+                    failed24h: 0,
+                    enabled: true
+                }
+            ];
+
+            // Deployment context (used for Jobs tab + breadcrumb/subpanel title)
+            window.__currentDeploymentBase = window.__currentDeploymentBase || 'deployment-cs-prod';
+            window.__deploymentCtx = window.__deploymentCtx || {
+                'deployment-cs-prod':    { deploymentName: 'cs-bot-prod',    agentNav: 'agent-detail-cs', agentName: 'Customer Support Bot', jobs: defaultJobs },
+                'deployment-cs-openai':  { deploymentName: 'cs-bot-openai',  agentNav: 'agent-detail-cs', agentName: 'Customer Support Bot', jobs: defaultJobs },
+                'deployment-cs-edge':    { deploymentName: 'cs-bot-edge',    agentNav: 'agent-detail-cs', agentName: 'Customer Support Bot', jobs: defaultJobs },
+                'deployment-cs-bedrock': { deploymentName: 'cs-bot-bedrock', agentNav: 'agent-detail-cs', agentName: 'Customer Support Bot', jobs: defaultJobs },
+                'deployment-pa-prod':    { deploymentName: 'pa-agent-prod',  agentNav: 'agent-detail-pa', agentName: 'Product Advisor Agent', jobs: defaultJobs },
+                'deployment-pks-prod':   { deploymentName: 'pks-prod',       agentNav: 'tools',          agentName: 'Tools', jobs: defaultJobs }
+            };
+
+            function normalizeDeploymentBase(viewId) {
+                if (!viewId) return null;
+                if (viewId === 'deployment-jobs') return window.__currentDeploymentBase || 'deployment-cs-prod';
+                if (viewId === 'deployment-alerts') return window.__currentDeploymentBase || 'deployment-cs-prod';
+                if (viewId.indexOf('deployment-alert-') === 0) {
+                    // Prototype mapping: the only alert detail view routes back to cs-bot-openai
+                    return 'deployment-cs-openai';
+                }
+                if (viewId.indexOf('deployment-') !== 0) return null;
+                if (viewId.indexOf('-usage') !== -1) return viewId.replace('-usage', '');
+                return viewId;
+            }
+
+            function getCurrentDeploymentCtx() {
+                var base = window.__currentDeploymentBase || 'deployment-cs-prod';
+                return window.__deploymentCtx[base] || window.__deploymentCtx['deployment-cs-prod'];
+            }
+
+            window.__setCurrentDeploymentFromView = function(viewId) {
+                var base = normalizeDeploymentBase(viewId);
+                if (base && window.__deploymentCtx[base]) {
+                    window.__currentDeploymentBase = base;
+                }
+                var ctx = getCurrentDeploymentCtx();
+                var title = document.getElementById('deployment-subpanel-title');
+                if (title) title.textContent = ctx.deploymentName;
+            };
+
+            window.__renderDeploymentJobs = function() {
+                if (!deploymentJobsRoot) return;
+                var ctx = getCurrentDeploymentCtx();
+                render(html`<${AgentAnalyticsView} name=${ctx.deploymentName} jobs=${ctx.jobs} />`, deploymentJobsRoot);
+            };
+
+            // Initial render (default deployment)
+            if (deploymentJobsRoot) {
+                window.__renderDeploymentJobs();
             }
         }
 
@@ -8263,6 +8301,14 @@
                 view.classList.add('active');
             }
 
+            // Track "current deployment" for the Deployment subpanel + Jobs view
+            if (window.__setCurrentDeploymentFromView) {
+                window.__setCurrentDeploymentFromView(viewId);
+            }
+            if (viewId === 'deployment-jobs' && window.__renderDeploymentJobs) {
+                window.__renderDeploymentJobs();
+            }
+
             // Update breadcrumb
             updateBreadcrumb(viewId);
             
@@ -8308,9 +8354,18 @@
                 case 'agent-evaluations':
                     html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-detail-cs">Customer Support Bot</span><span class="separator">›</span><span class="current">Evaluations</span>';
                     break;
-                case 'agent-analytics':
-                    html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-detail-cs">Customer Support Bot</span><span class="separator">›</span><span class="current">Jobs</span>';
+                case 'deployment-jobs': {
+                    var base = (window.__currentDeploymentBase) ? window.__currentDeploymentBase : 'deployment-cs-prod';
+                    var ctx = (window.__deploymentCtx && window.__deploymentCtx[base]) ? window.__deploymentCtx[base] : null;
+                    if (ctx && ctx.agentNav === 'tools') {
+                        html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="tools">Tools</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="' + base + '">' + ctx.deploymentName + '</span><span class="separator">›</span><span class="current">Jobs</span>';
+                    } else if (ctx) {
+                        html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="' + ctx.agentNav + '">' + ctx.agentName + '</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="' + base + '">' + ctx.deploymentName + '</span><span class="separator">›</span><span class="current">Jobs</span>';
+                    } else {
+                        html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="current">Jobs</span>';
+                    }
                     break;
+                }
                 case 'agent-detail-pa':
                     html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="current">Product Advisor Agent</span>';
                     break;
@@ -8374,7 +8429,7 @@
 
         function updateSidebar(viewId) {
             // View → parent-group mappings
-            var agentViews = ['agents', 'agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-analytics', 'agent-evaluations', 'deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'eval-detail', 'trace-detail', 'chunk-lineage'];
+            var agentViews = ['agents', 'agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-evaluations', 'deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-pks-prod', 'eval-detail', 'trace-detail', 'chunk-lineage'];
             var pipelineViews = ['pipelines', 'evaluations', 'chunks'];
             var dbViews = ['databases', 'db-detail-pks', 'db-detail-sas', 'deployment-pks-prod'];
             var modelViews = ['models', 'model-gpt-4-turbo'];
@@ -8382,7 +8437,7 @@
             var guardrailViews = ['guardrails'];
             // Alerts views removed from sidebar for now (confusing in prototype)
             var alertsViews = ['deployment-alert-cs-openai-feedback'];
-            var deploymentsTopViews = ['deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-alerts', 'deployment-pks-prod'];
+            var deploymentsTopViews = ['deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-alerts', 'deployment-pks-prod'];
 
             // All views that highlight the Agents primary sidebar item
             var agentGroupViews = agentViews.concat(dbViews);
@@ -8409,18 +8464,18 @@
             // --- Sub-panels: Agents vs Deployment ---
             var agentsPanel = document.getElementById('agents-subpanel');
             var depPanel = document.getElementById('deployment-subpanel');
-            var deploymentViews = ['deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-alerts'];
+            var deploymentViews = ['deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-pks-prod', 'deployment-alerts'];
             var isDeployment = deploymentViews.indexOf(viewId) !== -1;
 
             // Subpanel items: Overview highlights for agent detail, Deployments for deployment views, Analytics, Evaluations
             var subOverviewViews = ['agent-detail-cs', 'agent-detail-pa'];
-            var subDeploymentsViews = ['agent-deployments', 'deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod'];
-            var subAnalyticsViews = ['agent-analytics'];
+            var subDeploymentsViews = ['agent-deployments', 'deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-pks-prod'];
+            var subAnalyticsViews = [];
             var subAlertsViews = [];
             var subEvalsViews = ['agent-evaluations', 'eval-detail', 'trace-detail', 'chunk-lineage'];
 
             // Views that show the agents subpanel (agent detail drilldowns only, NOT the agents table)
-            var agentDetailDrillViews = ['agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-analytics', 'agent-evaluations', 'eval-detail', 'trace-detail', 'chunk-lineage'];
+            var agentDetailDrillViews = ['agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-evaluations', 'eval-detail', 'trace-detail', 'chunk-lineage'];
             var showAgentsSubpanel = agentDetailDrillViews.indexOf(viewId) !== -1;
 
             if (agentsPanel && depPanel) {
@@ -8434,7 +8489,7 @@
                     for (var d = 0; d < depItems.length; d++) {
                         depItems[d].classList.remove('active');
                         var tab = depItems[d].getAttribute('data-dep-tab');
-                        var desired = (viewId === 'deployment-alerts' || viewId.indexOf('deployment-alert-') === 0) ? 'alerts' : viewId.indexOf('-usage') !== -1 ? 'usage' : 'overview';
+                        var desired = (viewId === 'deployment-alerts' || viewId.indexOf('deployment-alert-') === 0) ? 'alerts' : (viewId === 'deployment-jobs') ? 'analytics' : viewId.indexOf('-usage') !== -1 ? 'usage' : 'overview';
                         if (tab === desired) {
                             depItems[d].classList.add('active');
                         }
@@ -8450,7 +8505,6 @@
                         var sNav = subItems[j].getAttribute('data-nav');
                         if ((sNav === 'agent-detail-cs' && subOverviewViews.indexOf(viewId) !== -1) ||
                             (sNav === 'agent-deployments' && subDeploymentsViews.indexOf(viewId) !== -1) ||
-                            (sNav === 'agent-analytics' && subAnalyticsViews.indexOf(viewId) !== -1) ||
                             // agent-alerts removed from sidebar
                             (sNav === 'agent-alerts' && false) ||
                             (sNav === 'agent-evaluations' && subEvalsViews.indexOf(viewId) !== -1)) {
