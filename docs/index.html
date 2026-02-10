@@ -501,14 +501,6 @@
             padding-bottom: 4px !important;
         }
 
-        /* Deployment subpanel header: match sizing, pad top > bottom */
-        #deployment-subpanel .sidebar-subpanel-header {
-            align-items: flex-start !important;
-            justify-content: center !important;
-            padding-top: 24px !important;
-            padding-bottom: 6px !important;
-        }
-
         /* Deployment views render their own top header in main content. */
 
         .sidebar-subpanel-items {
@@ -1166,6 +1158,262 @@
         .view.active[style*="flex-direction: column"] {
             display: flex !important;
             max-height: 100%;
+        }
+
+        /* Experiments mode: full-width header bar (floating card top) */
+        #experiments-top-header {
+            display: none;
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            z-index: 10;
+            height: 48px;
+            background: var(--bg-page);
+            border: 1px solid rgba(232, 236, 240, 0.06);
+            border-bottom: 1px solid var(--border-subtle);
+            border-top-left-radius: var(--radius-xl);
+            border-top-right-radius: var(--radius-xl);
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+        }
+
+        #experiments-top-header.visible {
+            display: flex;
+        }
+
+        #experiments-top-header .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        #experiments-top-header .back-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        #experiments-top-header .exp-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        #experiments-top-header .exp-dropdown-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 14px;
+            border: 1px solid var(--border-subtle);
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        #experiments-top-header .exp-dropdown-pill:hover {
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
+
+        /* Deployment header mode — card-style with margins and rounded top */
+        #deployment-top-header {
+            display: none;
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            z-index: 10;
+            height: 48px;
+            background: var(--bg-page);
+            border: 1px solid rgba(232, 236, 240, 0.06);
+            border-bottom: 1px solid var(--border-subtle);
+            border-top-left-radius: var(--radius-xl);
+            border-top-right-radius: var(--radius-xl);
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+        }
+
+        #deployment-top-header.visible {
+            display: flex;
+        }
+
+        #deployment-top-header .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        #deployment-top-header .back-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        #deployment-top-header .dep-header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        #deployment-top-header .dep-header-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 14px;
+            border: 1px solid var(--border-subtle);
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        #deployment-top-header .dep-header-pill:hover {
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
+
+        .sidebar.deployment-mode {
+            display: none;
+        }
+
+
+        .content-area.deployment-mode {
+            margin: 60px 12px 12px 12px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-top: none;
+        }
+
+        .content-area.deployment-mode .deployment-nav-panel {
+            width: 140px;
+            min-width: 140px;
+            padding: 8px 6px;
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .content-area.deployment-mode .deployment-nav-panel .dep-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px;
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 450;
+            transition: all var(--transition-fast);
+        }
+
+        .content-area.deployment-mode .deployment-nav-panel .dep-nav-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .content-area.deployment-mode .deployment-nav-panel .dep-nav-item.active {
+            background: var(--bg-active);
+            color: var(--color-primary);
+        }
+
+        .content-area.deployment-mode .deployment-nav-panel .dep-nav-icon {
+            width: 15px;
+            height: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .content-area.deployment-mode .deployment-nav-panel .dep-nav-icon svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        /* Experiments mode: sidebar hidden, nav inside content area */
+        .sidebar.experiments-mode {
+            display: none;
+        }
+
+        .content-area.experiments-mode {
+            margin: 60px 12px 12px 12px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-top: none;
+        }
+
+        .content-area.experiments-mode .experiments-nav-panel {
+            width: 140px;
+            min-width: 140px;
+            padding: 8px 6px;
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+
+        .content-area.experiments-mode .experiments-nav-panel .exp-nav-section-title {
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 10px 10px 3px;
+        }
+
+        .content-area.experiments-mode .experiments-nav-panel .exp-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px;
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 450;
+            transition: all var(--transition-fast);
+        }
+
+        .content-area.experiments-mode .experiments-nav-panel .exp-nav-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .content-area.experiments-mode .experiments-nav-panel .exp-nav-item.active {
+            background: var(--bg-active);
+            color: var(--color-primary);
+        }
+
+        .content-area.experiments-mode .experiments-nav-panel .exp-nav-icon {
+            width: 15px;
+            height: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .content-area.experiments-mode .experiments-nav-panel .exp-nav-icon svg {
+            width: 15px;
+            height: 15px;
         }
 
         /* Link styling */
@@ -1985,7 +2233,7 @@
 
         .pagination-btn.active {
             color: var(--text-primary);
-            background: var(--color-primary-gradient);
+            background: var(--bg-elevated);
         }
 
         /* Responsive grid */
@@ -2108,7 +2356,29 @@
         </header>
 
         <!-- Body: Sidebar + Main Content -->
-        <div style="display: flex; flex: 1 1 0%; min-height: 0; overflow: hidden;">
+        <div id="app-body" style="display: flex; flex: 1 1 0%; min-height: 0; overflow: hidden; position: relative;">
+            <!-- Experiments full-width header (hidden by default) -->
+            <div id="experiments-top-header">
+                <button class="back-btn" data-nav="agent-versions" title="Back to Versions">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                </button>
+                <span class="exp-title">Default</span>
+                <span class="exp-dropdown-pill">GenAI apps &amp; agents <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:10px;height:10px;"><path d="M6 9l6 6 6-6"></path></svg></span>
+                <span id="exp-version-filter" style="display:none; margin-left:auto; align-items:center; gap:6px; padding:4px 10px 4px 12px; border-radius:14px; border:1px solid var(--border-subtle); background:rgba(96,165,250,0.08); font-size:11px; color:#60a5fa; cursor:default;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;flex-shrink:0;"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>
+                    <span>Version: <strong id="exp-version-label"></strong></span>
+                    <button id="exp-version-clear" title="Clear version filter" style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:none;background:transparent;color:#60a5fa;cursor:pointer;padding:0;border-radius:50;margin-left:2px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px;"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>
+                    </button>
+                </span>
+            </div>
+            <!-- Deployment full-width header (hidden by default) -->
+            <div id="deployment-top-header">
+                <button class="back-btn" data-nav="agent-deployments" title="Back to Deployments">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                </button>
+                <span class="dep-header-title" id="dep-header-title">cs-bot-prod</span>
+            </div>
             <!-- Sidebar - MLflow Style (narrow primary) -->
             <aside class="sidebar">
                 <nav class="sidebar-nav">
@@ -2224,66 +2494,22 @@
                                 </span>
                                 Deployments
                             </div>
-                            <div class="sidebar-subpanel-item" data-nav="agent-evaluations">
+                            <div class="sidebar-subpanel-item" data-nav="agent-versions">
                                 <span class="sidebar-subpanel-item-icon" aria-hidden="true">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M9 11l3 3L22 4"></path>
-                                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                        <path d="M16 3h5v5"></path>
+                                        <path d="M8 3H3v5"></path>
+                                        <path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"></path>
+                                        <path d="m15 9 6-6"></path>
+                                        <path d="M9 22v-8.3a4 4 0 0 1 1.172-2.872L21 3"></path>
                                     </svg>
                                 </span>
-                                Evaluations
+                                Versions
                             </div>
                         </div>
                     </aside>
 
-                    <!-- Sub-panel: Deployment (replaces Agents subpanel on deployment views) -->
-                    <aside class="sidebar-subpanel" id="deployment-subpanel">
-                        <div class="sidebar-subpanel-header">
-                            <h2 class="sidebar-subpanel-title deployment-header" id="deployment-subpanel-title">Deployment</h2>
-                        </div>
-                        <div class="sidebar-subpanel-items">
-                            <div class="sidebar-subpanel-item active" data-nav="deployment-cs-prod" data-dep-tab="overview">
-                                <span class="sidebar-subpanel-item-icon" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-                                        <path d="M3 9h18"></path>
-                                        <path d="M9 21V9"></path>
-                                    </svg>
-                                </span>
-                                Overview
-                            </div>
-                            <div class="sidebar-subpanel-item" data-nav="deployment-cs-prod-usage" data-dep-tab="usage">
-                                <span class="sidebar-subpanel-item-icon" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M3 3v18h18"></path>
-                                        <path d="M7 16l4-8 4 5 4-9"></path>
-                                    </svg>
-                                </span>
-                                Usage
-                            </div>
-                            <div class="sidebar-subpanel-item" data-nav="deployment-jobs" data-dep-tab="analytics">
-                                <span class="sidebar-subpanel-item-icon" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="3"></circle>
-                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                                    </svg>
-                                </span>
-                                Jobs
-                            </div>
-                            <div class="sidebar-subpanel-item" data-nav="deployment-alerts" data-dep-tab="alerts">
-                                <span class="sidebar-subpanel-item-icon" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12 22s8-4 8-10V6l-8-4-8 4v6c0 6 8 10 8 10Z"></path>
-                                        <path d="M12 8v4"></path>
-                                        <path d="M12 16h.01"></path>
-                                    </svg>
-                                </span>
-                                Alerts
-                            </div>
-                        </div>
-                    </aside>
-
-                    <div style="flex: 1; min-width: 0; overflow-y: auto; padding: 20px;">
+                    <div id="views-wrapper" style="flex: 1; min-width: 0; overflow-y: auto; padding: 20px;">
 
                 <!-- View: Home -->
                 <div id="view-home" class="view">
@@ -2292,9 +2518,8 @@
                 </div>
 
                 <!-- View: Experiments -->
-                <div id="view-experiments" class="view">
-                    <h1 class="text-xl font-semibold text-white mb-4">Experiments</h1>
-                    <p class="text-gray-400">Experiments view coming soon.</p>
+                <div id="view-experiments" class="view" style="flex-direction: column; height: 100%; box-sizing: border-box;">
+                    <div id="experiments-root" style="flex:1; min-height:0; display:flex; flex-direction:column;"></div>
                 </div>
 
                 <!-- View: Models -->
@@ -3404,14 +3629,9 @@
                     <div id="agent-deployments-root"></div>
                 </div>
 
-                <!-- View: Agent Evaluations (extracted from agent detail) -->
-                <div id="view-agent-evaluations" class="view">
-                    <div id="agent-evaluations-root"></div>
-                </div>
-
-                <!-- View: Evaluation Run Detail -->
-                <div id="view-eval-run-detail" class="view">
-                    <div id="eval-run-detail-root"></div>
+                <!-- View: Agent Versions -->
+                <div id="view-agent-versions" class="view">
+                    <div id="agent-versions-root"></div>
                 </div>
 
                 <!-- View: Agent Detail — Product Advisor Agent (Preact) -->
@@ -4730,8 +4950,20 @@
                                     </tr>
                                 ` : null}
                                 ${pageRows.map(function(row) {
+                                    var rowClickable = !!(row && (row.nav || row.onClick));
                                     return html`
-                                        <tr class=${row.nav ? 'card-clickable' : ''} style=${(row.nav ? 'cursor:pointer;' : '') + (row.rowStyle || '')} onClick=${row.nav ? function(e){ e.stopPropagation(); window.showView(row.nav); } : null}>
+                                        <tr
+                                            class=${rowClickable ? 'card-clickable' : ''}
+                                            style=${(rowClickable ? 'cursor:pointer;' : '') + (row.rowStyle || '')}
+                                            onClick=${rowClickable ? function(e){
+                                                e.stopPropagation();
+                                                if (typeof row.onClick === 'function') {
+                                                    row.onClick(row, e);
+                                                } else if (row.nav) {
+                                                    window.showView(row.nav);
+                                                }
+                                            } : null}
+                                        >
                                             ${columns.map(function(c) {
                                                 var tdStyle = (c.align ? 'text-align:' + c.align + ';' : '') + 'overflow:hidden; text-overflow:ellipsis; white-space:nowrap;';
                                                 if (c.render) return html`<td style=${tdStyle}>${c.render(row)}</td>`;
@@ -6788,6 +7020,265 @@
         }
 
         // --------------------------------------------------
+        // GitVersionTree — horizontal commit-graph with responsive window size
+        // props: { versions: [{ version, created, status, statusClass, parent? }] }
+        // --------------------------------------------------
+        function GitVersionTree(props) {
+            var versions = (props && props.versions) ? props.versions.slice() : [];
+            if (!versions.length) return null;
+
+            var _page = useState(0);
+            var treePage = _page[0];
+            var setTreePage = _page[1];
+            var _containerWidth = useState(0);
+            var containerWidth = _containerWidth[0];
+            var setContainerWidth = _containerWidth[1];
+            var containerRef = useRef(null);
+
+            var nodeW = 28;
+            var nodeH = 28;
+            var colW = 90;
+            var rowH = 48;
+            var padding = 16;
+            var branchSpread = 2;
+            var pageSize = containerWidth > 0
+                ? Math.max(3, Math.floor((containerWidth - padding * 2) / colW))
+                : 8;
+
+            var byVersion = {};
+            versions.forEach(function(v) { byVersion[v.version] = v; });
+            // Keep timeline left -> right (older -> newer)
+            versions.sort(function(a, b) {
+                var da = a.created ? new Date(a.created).getTime() : 0;
+                var db = b.created ? new Date(b.created).getTime() : 0;
+                return da - db;
+            });
+
+            var children = {};
+            versions.forEach(function(v) {
+                var p = v.parent;
+                if (!p) return;
+                if (!children[p]) children[p] = [];
+                children[p].push(v.version);
+            });
+            var rowForVersion = {};
+            var maxRow = 0;
+            var minRow = 0;
+            for (var i = 0; i < versions.length; i++) {
+                var v = versions[i];
+                var p = v.parent;
+                var sibs = p ? (children[p] || []).slice().sort(function(a, b) {
+                    var ad = (byVersion[a] && byVersion[a].created) ? new Date(byVersion[a].created).getTime() : 0;
+                    var bd = (byVersion[b] && byVersion[b].created) ? new Date(byVersion[b].created).getTime() : 0;
+                    return bd - ad;
+                }) : [v.version];
+                var idx = sibs.indexOf(v.version);
+                if (idx < 0) idx = 0;
+                var pRow = p ? (rowForVersion[p] != null ? rowForVersion[p] : 0) : 0;
+                // Keep mainline linear; spread branches farther from mainline.
+                var row = (sibs.length > 1 && idx > 0) ? pRow - (idx * branchSpread) : pRow;
+                rowForVersion[v.version] = row;
+                maxRow = Math.max(maxRow, row);
+                minRow = Math.min(minRow, row);
+            }
+
+            useEffect(function() {
+                var el = containerRef.current;
+                function measure() {
+                    var target = el || containerRef.current;
+                    if (!target) return;
+                    var w = target.getBoundingClientRect().width;
+                    if (w > 0) setContainerWidth(w);
+                }
+                measure();
+                setTimeout(measure, 0);
+                var ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+                if (ro && el) ro.observe(el);
+                window.addEventListener('resize', measure);
+                return function() {
+                    window.removeEventListener('resize', measure);
+                    if (ro && el) try { ro.unobserve(el); } catch (_) {}
+                };
+            }, []);
+
+            var totalPages = Math.max(1, Math.ceil(versions.length / pageSize));
+            if (treePage >= totalPages) setTreePage(Math.max(0, totalPages - 1));
+
+            // Page 0 shows most recent nodes. Higher pages move older.
+            var windowEnd = Math.max(0, versions.length - treePage * pageSize);
+            var windowStart = Math.max(0, windowEnd - pageSize);
+            var visibleVersions = versions.slice(windowStart, windowEnd);
+            var colOffset = Math.max(0, pageSize - visibleVersions.length);
+
+            var rowOffset = minRow;
+            var rowSpan = maxRow - minRow + 1;
+            var w = padding * 2 + pageSize * colW;
+            var h = padding * 2 + rowSpan * rowH;
+
+            var lineColor = 'rgba(232, 236, 240, 0.2)';
+            var paths = [];
+            var rightEdge = w - padding;
+            var leftEdge = padding;
+            visibleVersions.forEach(function(v, ii) {
+                if (!v.parent) return;
+                if (!byVersion[v.parent]) return;
+                var row = rowForVersion[v.version] || 0;
+                var pRow = rowForVersion[v.parent] != null ? rowForVersion[v.parent] : 0;
+                var col = colOffset + ii;
+                var x = padding + col * colW + colW / 2;
+                var y = padding + (row - rowOffset) * rowH + nodeH / 2;
+                var pCol = versions.findIndex(function(ver) { return ver && ver.version === v.parent; });
+                if (pCol < 0) return;
+
+                var px, py;
+                if (pCol >= windowStart && pCol < windowEnd) {
+                    var relPCol = colOffset + (pCol - windowStart);
+                    px = padding + relPCol * colW + colW / 2;
+                    py = padding + (pRow - rowOffset) * rowH + nodeH / 2;
+                } else if (pCol < windowStart) {
+                    px = leftEdge;
+                    py = padding + (pRow - rowOffset) * rowH + nodeH / 2;
+                } else {
+                    px = rightEdge;
+                    py = padding + (pRow - rowOffset) * rowH + nodeH / 2;
+                }
+
+                var midX = (x + px) / 2;
+                if (Math.abs(row - pRow) > 0.5) {
+                    paths.push('M ' + px + ' ' + py + ' L ' + midX + ' ' + py + ' L ' + midX + ' ' + y + ' L ' + x + ' ' + y);
+                } else {
+                    paths.push('M ' + px + ' ' + py + ' L ' + x + ' ' + y);
+                }
+            });
+            // Continuation hint: if a visible node has children on a newer page,
+            // extend a line to the right edge to show the stream continues.
+            visibleVersions.forEach(function(v, ii) {
+                var childVers = children[v.version] || [];
+                if (!childVers.length) return;
+                var hasOffPageRightChild = childVers.some(function(cv) {
+                    var idx = versions.findIndex(function(ver) { return ver && ver.version === cv; });
+                    return idx >= windowEnd;
+                });
+                if (!hasOffPageRightChild) return;
+                var row = rowForVersion[v.version] || 0;
+                var col = colOffset + ii;
+                var x = padding + col * colW + colW / 2;
+                var y = padding + (row - rowOffset) * rowH + nodeH / 2;
+                if (x < rightEdge) {
+                    paths.push('M ' + x + ' ' + y + ' L ' + rightEdge + ' ' + y);
+                }
+            });
+            return html`
+                <div ref=${containerRef} style="background: var(--bg-page); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden; padding: 16px; width: 100%;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                        <div style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Version history</div>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <button class="pagination-btn" disabled=${treePage >= totalPages - 1} onClick=${function(){ if (treePage < totalPages - 1) setTreePage(treePage + 1); }} style="padding: 4px 8px; font-size: 11px;">Older</button>
+                            <span style="font-size: 11px; color: var(--text-muted);">${windowStart + 1}-${windowEnd} of ${versions.length}</span>
+                            <button class="pagination-btn" disabled=${treePage <= 0} onClick=${function(){ if (treePage > 0) setTreePage(treePage - 1); }} style="padding: 4px 8px; font-size: 11px;">Newer</button>
+                        </div>
+                    </div>
+                    <div style="position: relative; width: ${w}px; min-height: ${h + 68}px;">
+                        <svg width=${w} height=${h} style="display: block;">
+                            ${paths.map(function(pathD) {
+                                return html`<path d=${pathD} fill="none" stroke=${lineColor} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+                            })}
+                            ${visibleVersions.map(function(v, ii) {
+                                var row = rowForVersion[v.version] || 0;
+                                var col = colOffset + ii;
+                                var x = padding + col * colW + colW / 2;
+                                var y = padding + (row - rowOffset) * rowH + nodeH / 2;
+                                var isActive = (v.status || '').toLowerCase() === 'active';
+                                var circleFill = isActive ? 'var(--bg-elevated)' : 'var(--bg-page)';
+                                var circleStroke = isActive ? 'var(--text-primary)' : 'var(--text-muted)';
+                                var strokeW = isActive ? 2 : 1;
+                                return html`
+                                    <circle
+                                        cx=${x}
+                                        cy=${y}
+                                        r=${(nodeH / 2) - 2}
+                                        fill=${circleFill}
+                                        stroke=${circleStroke}
+                                        stroke-width=${strokeW}
+                                        style="cursor: pointer;"
+                                        onClick=${function(e){
+                                            e.stopPropagation();
+                                            if (window.__openVersionExperiments) window.__openVersionExperiments(v);
+                                        }}
+                                    />
+                                `;
+                            })}
+                        </svg>
+                        ${visibleVersions.map(function(v, ii) {
+                            var row = rowForVersion[v.version] || 0;
+                            var col = colOffset + ii;
+                            var centerX = padding + col * colW + colW / 2;
+                            var nodeY = padding + (row - rowOffset) * rowH + nodeH / 2;
+                            var labelTop = nodeY + (nodeH / 2) + 16;
+                            var cls = v.statusClass || 'status-none';
+                            return html`
+                                <div style="position: absolute; left: ${centerX}px; top: ${labelTop}px; width: ${colW - 8}px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: none;">
+                                    <span style="font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--text-primary); text-align: center;">${v.version}</span>
+                                    <span style="font-size: 10px; color: var(--text-muted); text-align: center;">${v.created}</span>
+                                    <span class=${cls} style="font-size: 9px;">● ${v.status}</span>
+                                </div>
+                            `;
+                        })}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --------------------------------------------------
+        // Reusable: AgentVersionsView (Preact DataTable)
+        // --------------------------------------------------
+        function AgentVersionsView(props) {
+            var versionColumns = [
+                { key: 'version', label: 'Version', sortable: true, render: function(r) {
+                    return html`<span class="font-mono text-white font-medium">${r.version}</span>`;
+                }},
+                { key: 'created', label: 'Created', sortable: true, render: function(r) {
+                    return html`<span class="text-gray-400">${r.created}</span>`;
+                }},
+                { key: 'status', label: 'Status', sortable: true, render: function(r) {
+                    var cls = r.statusClass || 'status-none';
+                    return html`<span class=${cls}>● ${r.status}</span>`;
+                }},
+                { key: 'deployedTo', label: 'Deployed to', render: function(r) {
+                    var deploys = r.deployedTo || [];
+                    if (!deploys.length) return html`<span class="text-gray-500">—</span>`;
+                    return html`<span class="text-gray-400">${deploys.join(', ')}</span>`;
+                }}
+            ];
+            var versionRows = (props.rows || []).map(function(r) {
+                var row = {};
+                for (var k in r) row[k] = r[k];
+                row.onClick = function(versionRow, e) {
+                    if (e) e.preventDefault();
+                    if (window.__openVersionExperiments) window.__openVersionExperiments(versionRow || row);
+                };
+                return row;
+            });
+            return html`
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    ${props.name ? html`
+                        <div style="text-align: center;">
+                            <h1 style="font-size: 32px; font-weight: 600; color: var(--text-primary); margin: 0; line-height: 1.15;">${props.name}</h1>
+                        </div>
+                    ` : null}
+                    <${GitVersionTree} versions=${versionRows} />
+                    <${DataTable}
+                        title="Versions"
+                        searchPlaceholder="Search versions..."
+                        columns=${versionColumns}
+                        rows=${versionRows}
+                        pageSize=${5}
+                    />
+                </div>
+            `;
+        }
+
+        // --------------------------------------------------
         // Eval Run Detail View (Preact component)
         // --------------------------------------------------
         function EvalRunDetailView(props) {
@@ -6930,14 +7421,273 @@
             `;
         }
 
-        // Global helper to navigate to eval run detail
-        window.__showEvalRunDetail = function(run) {
-            var root = document.getElementById('eval-run-detail-root');
-            if (root) {
-                render(html`<${EvalRunDetailView} run=${run} />`, root);
+        // --------------------------------------------------
+        // Experiments View (version-scoped, matching MLflow Evaluation Runs)
+        // --------------------------------------------------
+        function VersionExperimentsView(props) {
+            var selectedVersion = (props && props.selectedVersion) ? props.selectedVersion : null;
+
+            // --- Runs data ---
+            var allRuns = [
+                { id: 'nimble-calf-849', runName: 'nimble-calf-849', createdAt: '49 seconds ago', dataset: 'dataset', version: 'v2.1', color: '#e97a2b' },
+                { id: 'mysterious-horse-544', runName: 'mysterious-horse-544', createdAt: '26 minutes ago', dataset: 'dataset', version: 'v2.1', color: '#4a90d9' },
+                { id: 'rag-grounding-kb', runName: 'rag-grounding-kb', createdAt: '2 hours ago', dataset: 'dataset', version: 'v2.0.3', color: '#8b5cf6' },
+                { id: 'jailbreak-safety', runName: 'jailbreak-safety', createdAt: '1 day ago', dataset: 'dataset', version: 'v2.0.2', color: '#10b981' }
+            ];
+            var runs = selectedVersion ? allRuns.filter(function(r) { return r.version === selectedVersion; }) : allRuns;
+            if (!runs.length) {
+                runs = [
+                    { id: 'run-' + selectedVersion + '-a', runName: 'eval-run-a', createdAt: '5 minutes ago', dataset: 'dataset', version: selectedVersion, color: '#e97a2b' },
+                    { id: 'run-' + selectedVersion + '-b', runName: 'eval-run-b', createdAt: '30 minutes ago', dataset: 'dataset', version: selectedVersion, color: '#4a90d9' }
+                ];
             }
-            window.showView('eval-run-detail');
+
+            // --- Traces data (comparison between first two runs) ---
+            var runA = runs[0] || {};
+            var runB = runs[1] || {};
+            var traceGroups = [
+                {
+                    request: 'Who wrote Romeo and Juliet?',
+                    traces: [
+                        { runId: runA.id, color: runA.color, traceId: 'tr-5dea01...', response: 'Romeo and Juliet was written by William Sh...', tokens: 39, execTime: '0.86s', state: 'OK' },
+                        { runId: runB.id, color: runB.color, traceId: 'tr-61072e...', response: '"Romeo and Juliet" was written by William S...', tokens: 41, execTime: '1.375s', state: 'OK' }
+                    ]
+                },
+                {
+                    request: 'Who was the first person to build an airpl...',
+                    traces: [
+                        { runId: runA.id, color: runA.color, traceId: 'tr-5d37da...', response: 'The Wright brothers, Orville and Wilbur Wrig...', tokens: 77, execTime: '1.497s', state: 'OK' },
+                        { runId: runB.id, color: runB.color, traceId: 'tr-4d4e1e...', response: 'The Wright brothers, Orville and Wilbur Wrig...', tokens: 76, execTime: '2.366s', state: 'OK' }
+                    ]
+                },
+                {
+                    request: 'What is the capital of France?',
+                    traces: [
+                        { runId: runA.id, color: runA.color, traceId: 'tr-7be124...', response: 'The capital of France is Paris.', tokens: 37, execTime: '0.769s', state: 'OK' },
+                        { runId: runB.id, color: runB.color, traceId: 'tr-b8bad2...', response: 'The capital of France is Paris.', tokens: 37, execTime: '1.345s', state: 'OK' }
+                    ]
+                }
+            ];
+
+            var tborder = 'var(--border-subtle)';
+            var ttext = 'var(--text-primary)';
+            var tsec = 'var(--text-secondary)';
+            var tmuted = 'var(--text-muted)';
+
+            // Dataset icon SVG (small table icon like in MLflow)
+            var datasetIcon = html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px; height:12px; flex-shrink:0; color:${tmuted};"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line></svg>`;
+
+            // Check icon for OK state
+            var checkIcon = html`<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" style="width:14px; height:14px;"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path d="M8 12l3 3 5-5"></path></svg>`;
+
+            return html`
+                <div style="display:flex; flex-direction:column; height:100%; overflow:hidden;">
+                    <!-- Top toolbar -->
+                    <div style="display:flex; align-items:center; gap:8px; padding:10px 0;">
+                        <!-- Table / Chart toggle -->
+                        <div style="display:flex; border:1px solid ${tborder}; border-radius:6px; overflow:hidden;">
+                            <button style="padding:5px 10px; background:rgba(255,255,255,0.08); border:none; color:${ttext}; cursor:pointer; font-size:12px; display:flex; align-items:center;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>
+                            </button>
+                            <button style="padding:5px 10px; background:transparent; border:none; border-left:1px solid ${tborder}; color:${tmuted}; cursor:pointer; font-size:12px; display:flex; align-items:center;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;"><path d="M3 3v18h18"></path><path d="M7 16l4-8 4 5 4-9"></path></svg>
+                            </button>
+                        </div>
+                        <!-- Search bar -->
+                        <div style="flex:1; max-width:260px; position:relative;">
+                            <input type="text" placeholder="metrics.rmse < 1 and params..." style="width:100%; padding:6px 10px 6px 28px; border-radius:6px; border:1px solid ${tborder}; background:transparent; color:${ttext}; font-size:12px; outline:none;" />
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px; height:13px; position:absolute; left:8px; top:50%; transform:translateY(-50%); color:${tmuted};"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+                        </div>
+                        <!-- Refresh -->
+                        <button style="padding:5px; background:transparent; border:1px solid ${tborder}; border-radius:6px; cursor:pointer; color:${tmuted}; display:flex; align-items:center; justify-content:center;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 16h5v5"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Filter bar (Columns, Group by) -->
+                    <div style="display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid ${tborder};">
+                        <button class="btn btn-ghost" style="padding:4px 10px; font-size:11px;">Columns ▾</button>
+                        <button class="btn btn-ghost" style="padding:4px 10px; font-size:11px;">Group by ▾</button>
+                    </div>
+
+                    <!-- Main content: left runs list + right traces detail -->
+                    <div style="flex:1; display:flex; overflow:hidden; min-height:0;">
+
+                        <!-- ===== Left panel: Runs list ===== -->
+                        <div style="width:360px; min-width:300px; border-right:1px solid ${tborder}; display:flex; flex-direction:column; overflow:hidden;">
+                            <!-- Runs table header -->
+                            <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+                                <colgroup>
+                                    <col style="width:36px;" />
+                                    <col />
+                                    <col style="width:78px;" />
+                                    <col style="width:58px;" />
+                                    <col style="width:52px;" />
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th style="text-transform:none; letter-spacing:0; padding:8px 2px 8px 10px; background:transparent; border-bottom:1px solid ${tborder};"></th>
+                                        <th style="text-transform:none; color:${ttext}; letter-spacing:0; font-weight:500; font-size:11px; background:transparent; border-bottom:1px solid ${tborder}; padding:8px 4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Run Name</th>
+                                        <th style="text-transform:none; color:${ttext}; letter-spacing:0; font-weight:500; font-size:11px; background:transparent; border-bottom:1px solid ${tborder}; padding:8px 4px;">Created at</th>
+                                        <th style="text-transform:none; color:${ttext}; letter-spacing:0; font-weight:500; font-size:11px; background:transparent; border-bottom:1px solid ${tborder}; padding:8px 4px;">Dataset</th>
+                                        <th style="text-transform:none; color:${ttext}; letter-spacing:0; font-weight:500; font-size:11px; background:transparent; border-bottom:1px solid ${tborder}; padding:8px 4px;">Version</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <!-- Runs rows (scrollable) -->
+                            <div style="flex:1; overflow-y:auto;">
+                                <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+                                    <colgroup>
+                                        <col style="width:36px;" />
+                                        <col />
+                                        <col style="width:78px;" />
+                                        <col style="width:58px;" />
+                                        <col style="width:52px;" />
+                                    </colgroup>
+                                    <tbody>
+                                        ${runs.map(function(r, idx) {
+                                            return html`<tr style="cursor:pointer;" onmouseenter=${function(e){ e.currentTarget.style.background='var(--bg-hover)'; }} onmouseleave=${function(e){ e.currentTarget.style.background=''; }}>
+                                                <td style="padding:8px 2px 8px 10px; border-bottom:1px solid rgba(255,255,255,0.04);">
+                                                    <span style="display:inline-flex; align-items:center; gap:5px;">
+                                                        <span style="display:inline-block; width:13px; height:13px; border-radius:3px; border:1.5px solid ${tmuted}; background:transparent; flex-shrink:0;"></span>
+                                                        <span style="width:6px; height:6px; border-radius:50%; background:${r.color}; flex-shrink:0;"></span>
+                                                    </span>
+                                                </td>
+                                                <td style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:${ttext}; font-weight:500; font-size:12px; padding:8px 4px; border-bottom:1px solid rgba(255,255,255,0.04);">${r.runName}</td>
+                                                <td style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:${tsec}; font-size:11px; padding:8px 4px; border-bottom:1px solid rgba(255,255,255,0.04);">${r.createdAt}</td>
+                                                <td style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:8px 4px; border-bottom:1px solid rgba(255,255,255,0.04);">
+                                                    <span style="display:inline-flex; align-items:center; gap:3px; font-size:11px; color:${tsec};">${datasetIcon} ${r.dataset}</span>
+                                                </td>
+                                                <td style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:11px; color:${tmuted}; padding:8px 4px; border-bottom:1px solid rgba(255,255,255,0.04);">${r.version || '-'}</td>
+                                            </tr>`;
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ===== Right panel: Trace comparison ===== -->
+                        <div style="flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0;">
+                            <!-- Run comparison bar -->
+                            <div style="display:flex; align-items:center; gap:8px; padding:10px 16px; border-bottom:1px solid ${tborder}; flex-shrink:0;">
+                                <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:16px; border:1px solid ${tborder}; font-size:12px; color:${ttext}; background:rgba(255,255,255,0.04);">
+                                    <span style="width:8px; height:8px; border-radius:50%; background:${runA.color || '#e97a2b'};"></span>
+                                    ${runA.runName || 'run-a'}
+                                </span>
+                                <span style="font-size:11px; color:${tmuted};">compare to</span>
+                                <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:16px; border:1px solid ${tborder}; font-size:12px; color:${ttext}; background:rgba(255,255,255,0.04);">
+                                    <span style="width:8px; height:8px; border-radius:50%; background:${runB.color || '#4a90d9'};"></span>
+                                    ${runB.runName || 'run-b'}
+                                </span>
+                            </div>
+
+                            <!-- Traces filter bar -->
+                            <div style="display:flex; align-items:center; gap:8px; padding:8px 16px; border-bottom:1px solid ${tborder}; flex-shrink:0;">
+                                <div style="flex:1; max-width:300px; position:relative;">
+                                    <input type="text" placeholder="Search traces by request" style="width:100%; padding:6px 10px 6px 28px; border-radius:6px; border:1px solid ${tborder}; background:transparent; color:${ttext}; font-size:12px; outline:none;" />
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px; height:13px; position:absolute; left:8px; top:50%; transform:translateY(-50%); color:${tmuted};"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+                                </div>
+                                <button class="btn btn-ghost" style="padding:4px 10px; font-size:11px;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px; height:12px; margin-right:4px;"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>
+                                    Filters
+                                </button>
+                                <button class="btn btn-ghost" style="padding:4px 10px; font-size:11px;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px; height:12px; margin-right:4px;"><path d="M3 6h18M6 12h12M9 18h6"></path></svg>
+                                    Sort
+                                </button>
+                                <button class="btn btn-ghost" style="padding:4px 10px; font-size:11px;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px; height:12px; margin-right:4px;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>
+                                    Columns
+                                </button>
+                                <button class="btn btn-ghost" style="padding:4px 10px; font-size:11px; color:#60a5fa;">Actions ▾</button>
+                            </div>
+
+                            <!-- Traces table -->
+                            <div style="flex:1; overflow-y:auto;">
+                                <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+                                    <colgroup>
+                                        <col style="width:26%;" />
+                                        <col style="width:12%;" />
+                                        <col style="width:35%;" />
+                                        <col style="width:8%;" />
+                                        <col style="width:12%;" />
+                                        <col style="width:7%;" />
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:left; padding:10px 12px; font-size:12px; font-weight:500; color:${ttext}; border-bottom:1px solid ${tborder}; text-transform:none; letter-spacing:0; background:transparent;">Request</th>
+                                            <th style="text-align:left; padding:10px 8px; font-size:12px; font-weight:500; color:${ttext}; border-bottom:1px solid ${tborder}; text-transform:none; letter-spacing:0; background:transparent;">Trace ID</th>
+                                            <th style="text-align:left; padding:10px 8px; font-size:12px; font-weight:500; color:${ttext}; border-bottom:1px solid ${tborder}; text-transform:none; letter-spacing:0; background:transparent;">Response</th>
+                                            <th style="text-align:right; padding:10px 8px; font-size:12px; font-weight:500; color:${ttext}; border-bottom:1px solid ${tborder}; text-transform:none; letter-spacing:0; background:transparent;">Tokens</th>
+                                            <th style="text-align:right; padding:10px 8px; font-size:12px; font-weight:500; color:${ttext}; border-bottom:1px solid ${tborder}; text-transform:none; letter-spacing:0; background:transparent;">Execution t...</th>
+                                            <th style="text-align:center; padding:10px 8px; font-size:12px; font-weight:500; color:${ttext}; border-bottom:1px solid ${tborder}; text-transform:none; letter-spacing:0; background:transparent;">State</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${traceGroups.map(function(group) {
+                                            return html`${group.traces.map(function(t, tIdx) {
+                                                return html`<tr style="cursor:pointer;" onmouseenter=${function(e){ e.currentTarget.style.background='var(--bg-hover)'; }} onmouseleave=${function(e){ e.currentTarget.style.background=''; }}>
+                                                    ${tIdx === 0 ? html`<td rowspan="${group.traces.length}" style="padding:12px 12px; vertical-align:top; color:#60a5fa; font-size:12px; border-bottom:1px solid ${tborder}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${group.request}</td>` : null}
+                                                    <td style="padding:8px 8px; border-bottom:1px solid rgba(255,255,255,0.04);">
+                                                        <span style="display:inline-flex; align-items:center; gap:5px; font-size:11px;">
+                                                            <span style="width:8px; height:8px; border-radius:50%; background:${t.color}; flex-shrink:0;"></span>
+                                                            <a href="#" style="color:#e97a2b; text-decoration:none; font-size:11px;" onclick=${function(e){ e.preventDefault(); }}>${t.traceId}</a>
+                                                        </span>
+                                                    </td>
+                                                    <td style="padding:8px 8px; font-size:12px; color:${tsec}; border-bottom:1px solid rgba(255,255,255,0.04); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.response}</td>
+                                                    <td style="padding:8px 8px; font-size:12px; color:${tsec}; text-align:right; border-bottom:1px solid rgba(255,255,255,0.04);">${t.tokens}</td>
+                                                    <td style="padding:8px 8px; font-size:12px; color:${tsec}; text-align:right; border-bottom:1px solid rgba(255,255,255,0.04);">${t.execTime}</td>
+                                                    <td style="padding:8px 8px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.04);">
+                                                        <span style="display:inline-flex; align-items:center; gap:3px; font-size:11px; color:${tsec};">${checkIcon} OK</span>
+                                                    </td>
+                                                </tr>`;
+                                            })}`;
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Global helper: open Experiments for a selected agent version
+        window.__selectedAgentVersion = null;
+
+        function __updateVersionFilterChip() {
+            var chip = document.getElementById('exp-version-filter');
+            var label = document.getElementById('exp-version-label');
+            if (!chip || !label) return;
+            if (window.__selectedAgentVersion) {
+                label.textContent = window.__selectedAgentVersion;
+                chip.style.display = 'inline-flex';
+            } else {
+                chip.style.display = 'none';
+            }
+        }
+
+        window.__renderExperimentsView = function() {
+            var root = document.getElementById('experiments-root');
+            if (!root) return;
+            render(html`<${VersionExperimentsView} selectedVersion=${window.__selectedAgentVersion} />`, root);
+            __updateVersionFilterChip();
         };
+        window.__openVersionExperiments = function(versionRow) {
+            if (!versionRow || !versionRow.version) return;
+            window.__selectedAgentVersion = versionRow.version;
+            window.showView('experiments');
+            if (window.__renderExperimentsView) window.__renderExperimentsView();
+        };
+
+        // Clear version filter button
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('#exp-version-clear')) {
+                e.stopPropagation();
+                window.__selectedAgentVersion = null;
+                if (window.__renderExperimentsView) window.__renderExperimentsView();
+            }
+        });
 
         // --------------------------------------------------
         // Reusable: AgentAnalyticsView (Jobs Dashboard)
@@ -7369,93 +8119,32 @@
             }
 
             // --------------------------------------------------
-            // Agent Evaluations View
+            // Agent Versions View
             // --------------------------------------------------
-            var agentEvalsRoot = document.getElementById('agent-evaluations-root');
-            if (agentEvalsRoot) {
-                render(html`<${AgentEvaluationsView} name="Customer Support Bot" runs=${[
-                    {
-                        ts: 1738833120000,
-                        runName: 'predeploy_regression__golden_answers_v5__llama3_70b_vllm__2026-02-06',
-                        suite: 'Regression',
-                        dataset: 'golden-answers-v5',
-                        datasetCount: 214,
-                        quality: 0.83, safety: 0.91, latencyMs: 420, costUsd: 0, when: '2h ago',
-                        models: [{ name: 'Llama 3.1 70B', provider: 'vLLM (self-hosted)', domain: 'docs.vllm.ai', nav: 'models' }],
-                        tools: [{ name: 'Slack v3', nav: 'tools' }, { name: 'GitHub v2', nav: 'tools' }, { name: 'Notion v1', nav: 'tools' }],
-                        databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }, { name: 'product-knowledge-store', nav: 'db-detail-pks' }],
-                        scorers: [
-                            { name: 'Correctness', score: 0.85, status: 'pass' },
-                            { name: 'Relevance', score: 0.81, status: 'pass' },
-                            { name: 'Safety', score: 0.91, status: 'pass' },
-                            { name: 'Groundedness', score: 0.79, status: 'pass' }
-                        ]
-                    },
-                    {
-                        ts: 1738747800000,
-                        runName: 'predeploy_toolcallcorrectness__zendesk_flows_v2__gpt-4o-mini__2026-02-05',
-                        suite: 'ToolCallCorrectness',
-                        dataset: 'zendesk-flows-v2',
-                        datasetCount: 87,
-                        quality: 0.78, safety: 0.89, latencyMs: 310, costUsd: 0.18, when: '1d ago',
-                        models: [{ name: 'gpt-4o-mini', provider: 'OpenAI', domain: 'openai.com', nav: 'models' }],
-                        tools: [{ name: 'Slack v3', nav: 'tools' }],
-                        databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }],
-                        scorers: [
-                            { name: 'Correctness', score: 0.78, status: 'warn' },
-                            { name: 'Relevance', score: 0.82, status: 'pass' },
-                            { name: 'Safety', score: 0.89, status: 'pass' }
-                        ]
-                    },
-                    {
-                        ts: 1738678260000,
-                        runName: 'predeploy_raggrounding__support_kb_qa_v1__mistral_small_24b__2026-02-04',
-                        suite: 'RAGGrounding',
-                        dataset: 'support-kb-qa-v1',
-                        datasetCount: 156,
-                        quality: 0.69, safety: 0.84, latencyMs: 540, costUsd: 0, when: '2d ago',
-                        models: [{ name: 'Mistral Small 24B', provider: 'Ollama (self-hosted)', domain: 'mistral.ai', nav: 'models' }],
-                        tools: [{ name: 'Notion v1', nav: 'tools' }],
-                        databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }],
-                        scorers: [
-                            { name: 'Correctness', score: 0.65, status: 'warn' },
-                            { name: 'Groundedness', score: 0.72, status: 'warn' },
-                            { name: 'Relevance', score: 0.70, status: 'warn' }
-                        ]
-                    },
-                    {
-                        ts: 1738584300000,
-                        runName: 'predeploy_jailbreak__safety_probes_v2__claude_3_5_sonnet__2026-02-03',
-                        suite: 'Jailbreak',
-                        dataset: 'safety-probes-v2',
-                        datasetCount: 340,
-                        quality: 0.64, safety: 0.66, latencyMs: 980, costUsd: 0.52, when: '3d ago',
-                        models: [{ name: 'Claude 3.5 Sonnet', provider: 'Anthropic', domain: 'anthropic.com', nav: 'models' }],
-                        tools: [{ name: 'Notion v1', nav: 'tools' }],
-                        databases: [{ name: 'support-articles-store', nav: 'db-detail-sas' }],
-                        scorers: [
-                            { name: 'Safety', score: 0.66, status: 'fail' },
-                            { name: 'Correctness', score: 0.64, status: 'fail' },
-                            { name: 'Guidelines', score: 0.71, status: 'warn', guideline: 'Must refuse all jailbreak attempts without leaking system prompt' }
-                        ]
-                    },
-                    {
-                        ts: 1738416240000,
-                        runName: 'predeploy_policyedgecases__refund_policy_v1__gpt-4_1__2026-02-01',
-                        suite: 'PolicyEdgeCases',
-                        dataset: 'refund-policy-v1',
-                        datasetCount: 62,
-                        quality: 0.67, safety: 0.81, latencyMs: 660, costUsd: 0.61, when: '5d ago',
-                        models: [{ name: 'gpt-4.1', provider: 'OpenAI', domain: 'openai.com', nav: 'models' }],
-                        tools: [{ name: 'refund.policy_lookup', nav: 'tools' }],
-                        databases: [{ name: 'product-knowledge-store', nav: 'db-detail-pks' }],
-                        scorers: [
-                            { name: 'Correctness', score: 0.67, status: 'warn' },
-                            { name: 'Safety', score: 0.81, status: 'pass' },
-                            { name: 'Guidelines', score: 0.62, status: 'fail', guideline: 'Must cite specific policy section numbers in every refund response' }
-                        ]
-                    }
-                ]} />`, agentEvalsRoot);
+            var agentVersionsRoot = document.getElementById('agent-versions-root');
+            if (agentVersionsRoot) {
+                render(html`<${AgentVersionsView} name="Customer Support Bot" rows=${[
+                    { version: 'v2.1', created: 'Feb 6, 2026', status: 'Active', statusClass: 'status-success', deployedTo: ['cs-bot-prod', 'cs-bot-openai'], parent: 'v2.0' },
+                    { version: 'v2.0.3', created: 'Feb 4, 2026', status: 'Archived', statusClass: 'status-none', deployedTo: [], parent: 'v2.0.2' },
+                    { version: 'v2.0.2', created: 'Feb 2, 2026', status: 'Archived', statusClass: 'status-none', deployedTo: [], parent: 'v2.0.1' },
+                    { version: 'v2.0.1', created: 'Jan 31, 2026', status: 'Archived', statusClass: 'status-none', deployedTo: [], parent: 'v2.0' },
+                    { version: 'v2.0', created: 'Jan 28, 2026', status: 'Active', statusClass: 'status-success', deployedTo: [], parent: 'v1.9' },
+                    { version: 'v1.9', created: 'Jan 15, 2026', status: 'Deprecated', statusClass: 'status-warning', deployedTo: [], parent: 'v1.8.1' },
+                    { version: 'v1.8.1', created: 'Jan 8, 2026', status: 'Archived', statusClass: 'status-none', deployedTo: [], parent: 'v1.8' },
+                    { version: 'v1.8', created: 'Jan 3, 2026', status: 'Archived', statusClass: 'status-none', deployedTo: [], parent: 'v1.7' },
+                    { version: 'v1.7.1', created: 'Dec 22, 2025', status: 'Archived', statusClass: 'status-none', deployedTo: [], parent: 'v1.7' },
+                    { version: 'v1.7', created: 'Dec 18, 2025', status: 'Archived', statusClass: 'status-none', deployedTo: [], parent: 'v1.6' },
+                    { version: 'v1.6', created: 'Dec 5, 2025', status: 'Archived', statusClass: 'status-none', deployedTo: [], parent: 'v1.5' },
+                    { version: 'v1.5', created: 'Nov 20, 2025', status: 'Archived', statusClass: 'status-none', deployedTo: [], parent: null }
+                ]} />`, agentVersionsRoot);
+            }
+
+            // --------------------------------------------------
+            // Experiments View
+            // --------------------------------------------------
+            var experimentsRoot = document.getElementById('experiments-root');
+            if (experimentsRoot && window.__renderExperimentsView) {
+                window.__renderExperimentsView();
             }
 
             // --------------------------------------------------
@@ -7570,8 +8259,6 @@
                     window.__currentDeploymentBase = base;
                 }
                 var ctx = getCurrentDeploymentCtx();
-                var title = document.getElementById('deployment-subpanel-title');
-                if (title) title.textContent = ctx.deploymentName;
             };
 
             window.__renderDeploymentJobs = function() {
@@ -8347,7 +9034,7 @@
 
                     <div style="display: grid; grid-template-columns: 1fr 260px; gap: 16px; align-items: start;">
                         <${Inbox}
-                            title="Alerts"
+                            title="Inbox"
                             items=${alertItems}
                             emptyIcon="✅"
                             emptyText="No alerts — all systems nominal"
@@ -8934,6 +9621,9 @@
             if (viewId === 'deployment-jobs' && window.__renderDeploymentJobs) {
                 window.__renderDeploymentJobs();
             }
+            if (viewId === 'experiments' && window.__renderExperimentsView) {
+                window.__renderExperimentsView();
+            }
 
             // Update breadcrumb
             updateBreadcrumb(viewId);
@@ -8977,11 +9667,12 @@
                 case 'agent-deployments':
                     html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-detail-cs">Customer Support Bot</span><span class="separator">›</span><span class="current">Deployments</span>';
                     break;
-                case 'agent-evaluations':
-                    html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-detail-cs">Customer Support Bot</span><span class="separator">›</span><span class="current">Evaluations</span>';
+                case 'agent-versions':
+                    html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-detail-cs">Customer Support Bot</span><span class="separator">›</span><span class="current">Versions</span>';
                     break;
-                case 'eval-run-detail':
-                    html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-detail-cs">Customer Support Bot</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-evaluations">Evaluations</span><span class="separator">›</span><span class="current">Run Detail</span>';
+                case 'experiments':
+                    var ver = window.__selectedAgentVersion || '';
+                    html = '<span class="breadcrumb-link" data-nav="agents">Agents</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-detail-cs">Customer Support Bot</span><span class="separator">›</span><span class="breadcrumb-link" data-nav="agent-versions">Versions</span><span class="separator">›</span><span class="current">Evaluation Runs' + (ver ? ' (' + ver + ')' : '') + '</span>';
                     break;
                 case 'deployment-jobs': {
                     var base = (window.__currentDeploymentBase) ? window.__currentDeploymentBase : 'deployment-cs-prod';
@@ -9056,9 +9747,131 @@
             breadcrumb.innerHTML = html;
         }
 
+        // Build experiments nav panel HTML (injected inside content-area, not sidebar)
+        function __buildExperimentsNavPanelHTML() {
+            var sections = [
+                { items: [
+                    { nav: 'home', label: 'Overview', icon: '<path d="M3 10.5 12 3l9 7.5"></path><path d="M5 10v11h14V10"></path>' }
+                ]},
+                { title: 'Observability', items: [
+                    { nav: 'experiments-traces', label: 'Traces', icon: '<path d="M3 3v18"></path><path d="M8 7h8"></path><path d="M8 12h5"></path><path d="M8 17h10"></path>' },
+                    { nav: 'experiments-sessions', label: 'Sessions', icon: '<circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path>' }
+                ]},
+                { title: 'Evaluation', items: [
+                    { nav: 'experiments-judges', label: 'Judges', icon: '<path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5Z"></path>' },
+                    { nav: 'experiments-datasets', label: 'Datasets', icon: '<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path>' },
+                    { nav: 'experiments', label: 'Evaluation runs', icon: '<rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect>', active: true }
+                ]},
+                { title: 'Prompts & versions', items: [
+                    { nav: 'prompts', label: 'Prompts', icon: '<path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5Z"></path>' },
+                    { nav: 'agent-versions', label: 'Agent versions', icon: '<path d="M12 2l7 4v12l-7 4-7-4V6l7-4Z"></path><path d="M12 7v10"></path><path d="M8.5 10.5h7"></path>' }
+                ]}
+            ];
+            var lines = [];
+            sections.forEach(function(sec) {
+                if (sec.title) {
+                    lines.push('<div class="exp-nav-section-title">' + sec.title + '</div>');
+                }
+                sec.items.forEach(function(item) {
+                    var cls = item.active ? ' active' : '';
+                    lines.push('<div class="exp-nav-item' + cls + '" data-nav="' + item.nav + '">');
+                    lines.push('  <span class="exp-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + item.icon + '</svg></span>');
+                    lines.push('  ' + item.label);
+                    lines.push('</div>');
+                });
+            });
+            return lines.join('\n');
+        }
+
+        // Build deployment nav panel HTML (injected inside content-area, not sidebar)
+        function __buildDeploymentNavPanelHTML(activeTab) {
+            var tabs = [
+                { nav: 'deployment-cs-prod', tab: 'overview', label: 'Overview', icon: '<rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path>' },
+                { nav: 'deployment-cs-prod-usage', tab: 'usage', label: 'Usage', icon: '<path d="M3 3v18h18"></path><path d="M7 16l4-8 4 5 4-9"></path>' },
+                { nav: 'deployment-jobs', tab: 'analytics', label: 'Jobs', icon: '<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>' },
+                { nav: 'deployment-alerts', tab: 'alerts', label: 'Alerts', icon: '<path d="M12 22s8-4 8-10V6l-8-4-8 4v6c0 6 8 10 8 10Z"></path><path d="M12 8v4"></path><path d="M12 16h.01"></path>' }
+            ];
+            var lines = [];
+            tabs.forEach(function(t) {
+                var cls = (t.tab === activeTab) ? ' active' : '';
+                lines.push('<div class="dep-nav-item' + cls + '" data-nav="' + t.nav + '">');
+                lines.push('  <span class="dep-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + t.icon + '</svg></span>');
+                lines.push('  ' + t.label);
+                lines.push('</div>');
+            });
+            return lines.join('\n');
+        }
+
+        function __getDeploymentActiveTab(viewId) {
+            if (viewId === 'deployment-alerts' || viewId.indexOf('deployment-alert-') === 0) return 'alerts';
+            if (viewId === 'deployment-jobs') return 'analytics';
+            if (viewId.indexOf('-usage') !== -1) return 'usage';
+            return 'overview';
+        }
+
         function updateSidebar(viewId) {
+            var sidebarEl = document.querySelector('.sidebar');
+            var sidebarNav = document.querySelector('.sidebar-nav');
+            var contentArea = document.querySelector('.content-area');
+            var expHeader = document.getElementById('experiments-top-header');
+            var depHeader = document.getElementById('deployment-top-header');
+
+            var deploymentViewsList = ['deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-pks-prod', 'deployment-alerts'];
+            var isDeploymentView = deploymentViewsList.indexOf(viewId) !== -1;
+            var isExperimentsView = (viewId === 'experiments');
+
+            if (sidebarNav) {
+                // --- Reset all modes first ---
+                if (sidebarEl) { sidebarEl.classList.remove('experiments-mode'); sidebarEl.classList.remove('deployment-mode'); }
+                if (contentArea) { contentArea.classList.remove('experiments-mode'); contentArea.classList.remove('deployment-mode'); }
+                if (expHeader) expHeader.classList.remove('visible');
+                if (depHeader) depHeader.classList.remove('visible');
+
+                // Remove any injected nav panels
+                var existingExpNav = contentArea ? contentArea.querySelector('.experiments-nav-panel') : null;
+                if (existingExpNav) existingExpNav.remove();
+                var existingDepNav = contentArea ? contentArea.querySelector('.deployment-nav-panel') : null;
+                if (existingDepNav) existingDepNav.remove();
+
+                var viewsWrapper = document.getElementById('views-wrapper');
+
+                // --- Experiments mode ---
+                if (isExperimentsView) {
+                    if (sidebarEl) sidebarEl.classList.add('experiments-mode');
+                    if (contentArea) contentArea.classList.add('experiments-mode');
+                    if (expHeader) expHeader.classList.add('visible');
+                    // Inject experiments nav panel into content area
+                    var expNavPanel = document.createElement('div');
+                    expNavPanel.className = 'experiments-nav-panel';
+                    expNavPanel.innerHTML = __buildExperimentsNavPanelHTML();
+                    if (contentArea && viewsWrapper) {
+                        contentArea.insertBefore(expNavPanel, viewsWrapper);
+                    }
+                }
+
+                // --- Deployment mode ---
+                if (isDeploymentView) {
+                    if (sidebarEl) sidebarEl.classList.add('deployment-mode');
+                    if (contentArea) contentArea.classList.add('deployment-mode');
+                    if (depHeader) {
+                        depHeader.classList.add('visible');
+                        // Update title from deployment context
+                        var ctx = (window.__deploymentCtx && window.__currentDeploymentBase) ? window.__deploymentCtx[window.__currentDeploymentBase] : null;
+                        var titleEl = document.getElementById('dep-header-title');
+                        if (titleEl && ctx) titleEl.textContent = ctx.deploymentName;
+                    }
+                    // Inject deployment nav panel into content area
+                    var depNavPanel = document.createElement('div');
+                    depNavPanel.className = 'deployment-nav-panel';
+                    depNavPanel.innerHTML = __buildDeploymentNavPanelHTML(__getDeploymentActiveTab(viewId));
+                    if (contentArea && viewsWrapper) {
+                        contentArea.insertBefore(depNavPanel, viewsWrapper);
+                    }
+                }
+            }
+
             // View → parent-group mappings
-            var agentViews = ['agents', 'agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-evaluations', 'eval-run-detail', 'deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-pks-prod', 'eval-detail', 'trace-detail', 'chunk-lineage'];
+            var agentViews = ['agents', 'agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-versions', 'deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-pks-prod', 'eval-detail', 'trace-detail', 'chunk-lineage'];
             var pipelineViews = ['pipelines', 'evaluations', 'chunks'];
             var dbViews = ['databases', 'db-detail-pks', 'db-detail-sas', 'deployment-pks-prod'];
             var modelViews = ['models', 'model-gpt-4-turbo'];
@@ -9090,42 +9903,26 @@
                 }
             }
 
-            // --- Sub-panels: Agents vs Deployment ---
+            // --- Sub-panels: Agents ---
             var agentsPanel = document.getElementById('agents-subpanel');
-            var depPanel = document.getElementById('deployment-subpanel');
             var deploymentViews = ['deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-pks-prod', 'deployment-alerts'];
             var isDeployment = deploymentViews.indexOf(viewId) !== -1;
 
-            // Subpanel items: Overview highlights for agent detail, Deployments for deployment views, Analytics, Evaluations
+            // Subpanel items
             var subOverviewViews = ['agent-detail-cs', 'agent-detail-pa'];
             var subDeploymentsViews = ['agent-deployments', 'deployment-cs-prod', 'deployment-cs-prod-usage', 'deployment-jobs', 'deployment-cs-openai', 'deployment-alert-cs-openai-feedback', 'deployment-cs-edge', 'deployment-cs-bedrock', 'deployment-pa-prod', 'deployment-pks-prod'];
-            var subAnalyticsViews = [];
-            var subAlertsViews = [];
-            var subEvalsViews = ['agent-evaluations', 'eval-run-detail', 'eval-detail', 'trace-detail', 'chunk-lineage'];
+            var subVersionsViews = ['agent-versions'];
 
             // Views that show the agents subpanel (agent detail drilldowns only, NOT the agents table)
-            var agentDetailDrillViews = ['agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-evaluations', 'eval-run-detail', 'eval-detail', 'trace-detail', 'chunk-lineage'];
+            var agentDetailDrillViews = ['agent-detail-cs', 'agent-detail-pa', 'agent-deployments', 'agent-versions', 'eval-detail', 'trace-detail', 'chunk-lineage'];
             var showAgentsSubpanel = agentDetailDrillViews.indexOf(viewId) !== -1;
 
-            if (agentsPanel && depPanel) {
+            if (agentsPanel) {
                 if (isDeployment) {
-                    // Show Deployment subpanel, hide Agents subpanel
+                    // Deployment mode uses its own nav panel inside content area
                     agentsPanel.classList.remove('visible');
-                    depPanel.classList.add('visible');
-
-                    // Highlight the correct Deployment tab
-                    var depItems = depPanel.querySelectorAll('.sidebar-subpanel-item');
-                    for (var d = 0; d < depItems.length; d++) {
-                        depItems[d].classList.remove('active');
-                        var tab = depItems[d].getAttribute('data-dep-tab');
-                        var desired = (viewId === 'deployment-alerts' || viewId.indexOf('deployment-alert-') === 0) ? 'alerts' : (viewId === 'deployment-jobs') ? 'analytics' : viewId.indexOf('-usage') !== -1 ? 'usage' : 'overview';
-                        if (tab === desired) {
-                            depItems[d].classList.add('active');
-                        }
-                    }
                 } else if (showAgentsSubpanel) {
                     agentsPanel.classList.add('visible');
-                    depPanel.classList.remove('visible');
 
                     // Highlight the correct Agents sub-panel item
                     var subItems = agentsPanel.querySelectorAll('.sidebar-subpanel-item');
@@ -9134,15 +9931,12 @@
                         var sNav = subItems[j].getAttribute('data-nav');
                         if ((sNav === 'agent-detail-cs' && subOverviewViews.indexOf(viewId) !== -1) ||
                             (sNav === 'agent-deployments' && subDeploymentsViews.indexOf(viewId) !== -1) ||
-                            // agent-alerts removed from sidebar
-                            (sNav === 'agent-alerts' && false) ||
-                            (sNav === 'agent-evaluations' && subEvalsViews.indexOf(viewId) !== -1)) {
+                            (sNav === 'agent-versions' && subVersionsViews.indexOf(viewId) !== -1)) {
                             subItems[j].classList.add('active');
                         }
                     }
                 } else {
                     agentsPanel.classList.remove('visible');
-                    depPanel.classList.remove('visible');
                 }
             }
         }
